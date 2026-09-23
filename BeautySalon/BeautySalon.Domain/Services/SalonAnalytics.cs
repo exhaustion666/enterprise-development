@@ -52,7 +52,7 @@ public class SalonAnalytics
             var windowStart = GetBookingEnd(currentBooking);
             var windowEnd = nextBooking.StartAt;
 
-            /// Свободные "окошки" за один день
+            /// Свободные "окошки" между соседними записями
             if (windowStart >= windowEnd)
             {
                 continue;
