@@ -3,8 +3,14 @@ using BeautySalon.Domain.Models;
 
 namespace BeautySalon.Domain.Services;
 
+/// <summary>
+/// Класс аналитики по записям салона
+/// </summary>
 public class SalonAnalytics
 {
+    /// <summary>
+    /// Мастера с заданным минимальным стажем
+    /// </summary>
     public static IReadOnlyList<Specialist> GetExperiencedSpecialists(
         IEnumerable<Specialist> specialists,
         int minimumExperienceYears)
@@ -17,31 +23,36 @@ public class SalonAnalytics
             .OrderBy(specialist => specialist.Id)];
     }
 
+    /// <summary>
+    /// Свободные "окошки" у мастера
+    /// </summary>
     public static IReadOnlyList<TimeSlot> GetSpecialistWindows(
         IEnumerable<Booking> bookings,
         int specialistId)
     {
         ArgumentNullException.ThrowIfNull(bookings);
 
-        Booking[] specialistBookings = bookings
+        Booking[] specialistBookings = [.. bookings
             .Where(booking => booking.SpecialistId == specialistId)
-            .OrderBy(booking => booking.StartAt)
-            .ToArray();
+            .OrderBy(booking => booking.StartAt)];
 
+        /// Если у мастера меньше двух записей "окошек" нет
         if (specialistBookings.Length < 2)
         {
             return [];
         }
 
+        /// Свободные "окошки"
         var windows = new List<TimeSlot>();
 
         for (var i = 0; i < specialistBookings.Length - 1; i++)
         {
-            Booking currentBooking = specialistBookings[i];
-            Booking nextBooking = specialistBookings[i + 1];
-            DateTimeOffset windowStart = GetBookingEnd(currentBooking);
-            DateTimeOffset windowEnd = nextBooking.StartAt;
+            var currentBooking = specialistBookings[i];
+            var nextBooking = specialistBookings[i + 1];
+            var windowStart = GetBookingEnd(currentBooking);
+            var windowEnd = nextBooking.StartAt;
 
+            /// Свободные "окошки" за один день
             if (windowStart >= windowEnd || windowStart.Date != windowEnd.Date)
             {
                 continue;
@@ -57,6 +68,9 @@ public class SalonAnalytics
         return windows;
     }
 
+    /// <summary>
+    /// Самые популярные услуги
+    /// </summary>
     public static IReadOnlyList<PopularService> GetTopServices(
         IEnumerable<Booking> bookings,
         int count)
@@ -76,6 +90,9 @@ public class SalonAnalytics
             .Take(count)];
     }
 
+    /// <summary>
+    /// Количество повторных записей клиентов за указанный период
+    /// </summary>
     public static int GetRepeatBookingCount(
         IEnumerable<Booking> bookings,
         DateTimeOffset from,
@@ -90,6 +107,9 @@ public class SalonAnalytics
             .Sum(group => group.Count() > 1 ? group.Count() - 1 : 0);
     }
 
+    /// <summary>
+    /// Клиенты записанные к нескольким мастерам упорядоченные по дате рождения
+    /// </summary>
     public static IReadOnlyList<Customer> GetCustomersWithMultipleSpecialists(
         IEnumerable<Customer> customers,
         IEnumerable<Booking> bookings)
@@ -112,6 +132,9 @@ public class SalonAnalytics
             .ThenBy(customer => customer.Id)];
     }
 
+    /// <summary>
+    /// Время окончания услуги
+    /// </summary>
     private static DateTimeOffset GetBookingEnd(Booking booking)
     {
         return booking.BeautyService is null

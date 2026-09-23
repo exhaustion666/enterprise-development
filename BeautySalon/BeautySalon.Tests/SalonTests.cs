@@ -11,6 +11,9 @@ public class SalonTests(SalonFixture fixture)
     private readonly SalonFixture _fixture = fixture;
     private readonly SalonAnalytics _analytics = new();
 
+    /// <summary>
+    /// Мастера стаж работы которых не менее 5 лет
+    /// </summary>
     [Fact]
     public void GetExperiencedSpecialists_WhenExperienceIsAtLeastFiveYears_ReturnsExpectedSpecialists()
     {
@@ -26,22 +29,25 @@ public class SalonTests(SalonFixture fixture)
             specialists.Select(specialist => specialist.Id));
     }
 
+    /// <summary>
+    /// Все "окошки" выбранного мастера
+    /// </summary>
     [Fact]
     public void GetSpecialistWindows_WhenThereAreGaps_ReturnsAllGaps()
     {
         const int specialistId = 0;
 
-        DateTimeOffset[] expectedStarts = new[]
-        {
+        DateTimeOffset[] expectedStarts =
+        [
             new DateTimeOffset(2026, 9, 1, 11, 0, 0, TimeSpan.Zero),
         new DateTimeOffset(2026, 9, 1, 14, 0, 0, TimeSpan.Zero)
-        };
+        ];
 
-        DateTimeOffset[] expectedEnds = new[]
-        {
+        DateTimeOffset[] expectedEnds =
+        [
             new DateTimeOffset(2026, 9, 1, 11, 30, 0, TimeSpan.Zero),
         new DateTimeOffset(2026, 9, 1, 15, 0, 0, TimeSpan.Zero)
-        };
+        ];
 
         IReadOnlyList<TimeSlot> windows = SalonAnalytics.GetSpecialistWindows(
             _fixture.Bookings,
@@ -63,6 +69,9 @@ public class SalonTests(SalonFixture fixture)
             windows.Select(window => window.Duration));
     }
 
+    /// <summary>
+    /// Топ 5 наиболее популярных услуг
+    /// </summary>
     [Fact]
     public void GetTopServices_WhenBookingsExist_ReturnsFiveServicesByBookingCount()
     {
@@ -83,6 +92,9 @@ public class SalonTests(SalonFixture fixture)
             topServices.Select(service => service.BookingCount));
     }
 
+    /// <summary>
+    /// Количество повторных записей клиентов за последний месяц
+    /// </summary>
     [Fact]
     public void GetRepeatBookingCount_WhenMonthContainsRepeatedCustomers_ReturnsRepeatCount()
     {
@@ -107,6 +119,9 @@ public class SalonTests(SalonFixture fixture)
         Assert.Equal(expectedRepeatCount, repeatCount);
     }
 
+    /// <summary>
+    /// Клиенты записанные к нескольким мастерам упорядоченные по дате рождения
+    /// </summary>
     [Fact]
     public void GetCustomersWithMultipleSpecialists_WhenCustomersHaveSeveralSpecialists_ReturnsCustomersByBirthDate()
     {

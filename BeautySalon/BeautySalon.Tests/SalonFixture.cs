@@ -3,14 +3,36 @@ using BeautySalon.Domain.Enums;
 
 namespace BeautySalon.Tests;
 
+/// <summary>
+/// Тестовые данные салона красоты
+/// </summary>
 public class SalonFixture
 {
+    /// <summary>
+    /// Список мастеров
+    /// </summary>
     public List<Specialist> Specialists { get; } = [];
+
+    /// <summary>
+    /// Список клиентов
+    /// </summary>
     public List<Customer> Customers { get; } = [];
+
+    /// <summary>
+    /// Список услуг
+    /// </summary>
     public List<BeautyService> BeautyServices { get; } = [];
+
+    /// <summary>
+    /// Список заказов
+    /// </summary>
     public List<Booking> Bookings { get; } = [];
+
     public SalonFixture()
     {
+        /// <summary>
+        /// Мастера
+        /// </summary>
         var specialist1 = new Specialist
         {
             Id = 0,
@@ -165,6 +187,9 @@ public class SalonFixture
         specialist10
         ]);
 
+        /// <summary>
+        /// Клиенты
+        /// </summary>
         var customer1 = new Customer
         {
             Id = 0,
@@ -288,6 +313,9 @@ public class SalonFixture
         customer10
         ]);
 
+        /// <summary>
+        /// Услуги
+        /// </summary>
         var service1 = new BeautyService
         {
             Id = 0,
@@ -392,6 +420,9 @@ public class SalonFixture
         service10
         ]);
 
+        /// <summary>
+        /// Время для тестов
+        /// </summary>
         var anchorDate = new DateTimeOffset(
             2026,
             9,
@@ -401,6 +432,9 @@ public class SalonFixture
             0,
             TimeSpan.Zero);
 
+        /// <summary>
+        /// Записи на услуги
+        /// </summary>
         Bookings.AddRange(
         [
             new Booking
