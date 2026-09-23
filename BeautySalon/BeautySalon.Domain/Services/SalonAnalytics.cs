@@ -1,34 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using BeautySalon.Domain.Entities;
+﻿using BeautySalon.Domain.Entities;
 using BeautySalon.Domain.Models;
 
 namespace BeautySalon.Domain.Services;
 
 public class SalonAnalytics
 {
-    public IReadOnlyList<Specialist> GetExperiencedSpecialists(
+    public static IReadOnlyList<Specialist> GetExperiencedSpecialists(
         IEnumerable<Specialist> specialists,
         int minimumExperienceYears)
     {
         ArgumentNullException.ThrowIfNull(specialists);
         ArgumentOutOfRangeException.ThrowIfNegative(minimumExperienceYears);
 
-        return specialists
+        return [.. specialists
             .Where(specialist => specialist.ExperienceYears >= minimumExperienceYears)
-            .OrderBy(specialist => specialist.Id)
-            .ToArray();
+            .OrderBy(specialist => specialist.Id)];
     }
 
-    public IReadOnlyList<TimeSlot> GetSpecialistWindows(
+    public static IReadOnlyList<TimeSlot> GetSpecialistWindows(
         IEnumerable<Booking> bookings,
         int specialistId)
     {
         ArgumentNullException.ThrowIfNull(bookings);
 
-        var specialistBookings = bookings
+        Booking[] specialistBookings = bookings
             .Where(booking => booking.SpecialistId == specialistId)
             .OrderBy(booking => booking.StartAt)
             .ToArray();
@@ -42,10 +37,10 @@ public class SalonAnalytics
 
         for (var i = 0; i < specialistBookings.Length - 1; i++)
         {
-            var currentBooking = specialistBookings[i];
-            var nextBooking = specialistBookings[i + 1];
-            var windowStart = GetBookingEnd(currentBooking);
-            var windowEnd = nextBooking.StartAt;
+            Booking currentBooking = specialistBookings[i];
+            Booking nextBooking = specialistBookings[i + 1];
+            DateTimeOffset windowStart = GetBookingEnd(currentBooking);
+            DateTimeOffset windowEnd = nextBooking.StartAt;
 
             if (windowStart >= windowEnd || windowStart.Date != windowEnd.Date)
             {
@@ -62,14 +57,14 @@ public class SalonAnalytics
         return windows;
     }
 
-    public IReadOnlyList<PopularService> GetTopServices(
+    public static IReadOnlyList<PopularService> GetTopServices(
         IEnumerable<Booking> bookings,
         int count)
     {
         ArgumentNullException.ThrowIfNull(bookings);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
-        return bookings
+        return [.. bookings
             .GroupBy(booking => booking.BeautyServiceId)
             .Select(group => new PopularService
             {
@@ -78,11 +73,10 @@ public class SalonAnalytics
             })
             .OrderByDescending(service => service.BookingCount)
             .ThenBy(service => service.BeautyServiceId)
-            .Take(count)
-            .ToArray();
+            .Take(count)];
     }
 
-    public int GetRepeatBookingCount(
+    public static int GetRepeatBookingCount(
         IEnumerable<Booking> bookings,
         DateTimeOffset from,
         DateTimeOffset to)
@@ -96,7 +90,7 @@ public class SalonAnalytics
             .Sum(group => group.Count() > 1 ? group.Count() - 1 : 0);
     }
 
-    public IReadOnlyList<Customer> GetCustomersWithMultipleSpecialists(
+    public static IReadOnlyList<Customer> GetCustomersWithMultipleSpecialists(
         IEnumerable<Customer> customers,
         IEnumerable<Booking> bookings)
     {
@@ -112,21 +106,17 @@ public class SalonAnalytics
             .Select(customerBookings => customerBookings.Key)
             .ToHashSet();
 
-        return customers
+        return [.. customers
             .Where(customer => customerIds.Contains(customer.Id))
             .OrderBy(customer => customer.DateOfBirth)
-            .ThenBy(customer => customer.Id)
-            .ToArray();
+            .ThenBy(customer => customer.Id)];
     }
 
     private static DateTimeOffset GetBookingEnd(Booking booking)
     {
-        if (booking.BeautyService is null)
-        {
-            throw new InvalidOperationException(
-                $"У записи {booking.Id} не указана услуга.");
-        }
-
-        return booking.StartAt + booking.BeautyService.Duration;
+        return booking.BeautyService is null
+            ? throw new InvalidOperationException(
+                $"У записи {booking.Id} не указана услуга.")
+            : booking.StartAt + booking.BeautyService.Duration;
     }
 }

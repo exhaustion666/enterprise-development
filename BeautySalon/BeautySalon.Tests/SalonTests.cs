@@ -1,5 +1,6 @@
-﻿using BeautySalon.Domain.Services;
-using BeautySalon.Tests;
+﻿using BeautySalon.Domain.Entities;
+using BeautySalon.Domain.Models;
+using BeautySalon.Domain.Services;
 using Xunit;
 
 namespace BeautySalon.Tests;
@@ -10,13 +11,13 @@ public class SalonTests(SalonFixture fixture)
     private readonly SalonFixture _fixture = fixture;
     private readonly SalonAnalytics _analytics = new();
 
-[Fact]
+    [Fact]
     public void GetExperiencedSpecialists_WhenExperienceIsAtLeastFiveYears_ReturnsExpectedSpecialists()
     {
         const int minimumExperienceYears = 5;
         int[] expectedIds = [0, 2, 3, 4, 6, 8, 9];
 
-        var specialists = _analytics.GetExperiencedSpecialists(
+        IReadOnlyList<Specialist> specialists = SalonAnalytics.GetExperiencedSpecialists(
             _fixture.Specialists,
             minimumExperienceYears);
 
@@ -30,19 +31,19 @@ public class SalonTests(SalonFixture fixture)
     {
         const int specialistId = 0;
 
-        var expectedStarts = new[]
+        DateTimeOffset[] expectedStarts = new[]
         {
             new DateTimeOffset(2026, 9, 1, 11, 0, 0, TimeSpan.Zero),
         new DateTimeOffset(2026, 9, 1, 14, 0, 0, TimeSpan.Zero)
         };
 
-        var expectedEnds = new[]
+        DateTimeOffset[] expectedEnds = new[]
         {
             new DateTimeOffset(2026, 9, 1, 11, 30, 0, TimeSpan.Zero),
         new DateTimeOffset(2026, 9, 1, 15, 0, 0, TimeSpan.Zero)
         };
 
-        var windows = _analytics.GetSpecialistWindows(
+        IReadOnlyList<TimeSlot> windows = SalonAnalytics.GetSpecialistWindows(
             _fixture.Bookings,
             specialistId);
 
@@ -55,11 +56,10 @@ public class SalonTests(SalonFixture fixture)
             windows.Select(window => window.EndAt));
 
         Assert.Equal(
-            new[]
-            {
+            [
             TimeSpan.FromMinutes(30),
             TimeSpan.FromHours(1)
-            },
+            ],
             windows.Select(window => window.Duration));
     }
 
@@ -70,7 +70,7 @@ public class SalonTests(SalonFixture fixture)
         int[] expectedServiceIds = [0, 1, 2, 3, 4];
         int[] expectedBookingCounts = [2, 2, 1, 1, 1];
 
-        var topServices = _analytics.GetTopServices(
+        IReadOnlyList<PopularService> topServices = SalonAnalytics.GetTopServices(
             _fixture.Bookings,
             count);
 
@@ -95,11 +95,11 @@ public class SalonTests(SalonFixture fixture)
             0,
             TimeSpan.Zero);
 
-        var from = to.AddMonths(-1);
+        DateTimeOffset from = to.AddMonths(-1);
 
         const int expectedRepeatCount = 3;
 
-        var repeatCount = _analytics.GetRepeatBookingCount(
+        var repeatCount = SalonAnalytics.GetRepeatBookingCount(
             _fixture.Bookings,
             from,
             to);
@@ -112,7 +112,7 @@ public class SalonTests(SalonFixture fixture)
     {
         int[] expectedCustomerIds = [1, 2];
 
-        var customers = _analytics.GetCustomersWithMultipleSpecialists(
+        IReadOnlyList<Customer> customers = SalonAnalytics.GetCustomersWithMultipleSpecialists(
             _fixture.Customers,
             _fixture.Bookings);
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BeautySalon.Domain.Entities;
+﻿using BeautySalon.Domain.Entities;
 using BeautySalon.Domain.Enums;
 
 namespace BeautySalon.Tests;

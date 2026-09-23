@@ -1,6 +1,7 @@
 ﻿using BeautySalon.Domain.Enums;
 
 namespace BeautySalon.Domain.Entities;
+
 public abstract class Person
 {
     public required int Id { get; set; }
