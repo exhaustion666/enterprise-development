@@ -1,43 +1,41 @@
 name: CI
 
 on:
-push:
-branches:
-- "**"
-pull_request:
-branches:
-- "**"
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
 
 permissions:
-contents: read
+  contents: read
 
 jobs:
-test:
-runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
-```
-steps:
-  - name: Checkout
-    uses: actions/checkout@v7
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
 
-  - name: Setup .NET
-    uses: actions/setup-dotnet@v6
-    with:
-      dotnet-version: 10.0.x
-      cache: true
-      cache-dependency-path: |
-        BeautySalon/**/*.csproj
-        BeautySalon/global.json
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+          cache: true
+          cache-dependency-path: |
+            BeautySalon/**/*.csproj
+            global.json
 
-  - name: Restore
-    working-directory: BeautySalon
-    run: dotnet restore BeautySalon.slnx
+      - name: Restore
+        working-directory: BeautySalon
+        run: dotnet restore BeautySalon.slnx
 
-  - name: Build
-    working-directory: BeautySalon
-    run: dotnet build BeautySalon.slnx --configuration Release --no-restore
+      - name: Build
+        working-directory: BeautySalon
+        run: dotnet build BeautySalon.slnx --configuration Release --no-restore
 
-  - name: Test
-    working-directory: BeautySalon
-    run: dotnet test BeautySalon.Tests/BeautySalon.Tests.csproj --configuration Release --no-build
-```
+      - name: Test
+        working-directory: BeautySalon
+        run: dotnet test BeautySalon.Tests/BeautySalon.Tests.csproj --configuration Release --no-build
