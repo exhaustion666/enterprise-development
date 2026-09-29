@@ -3,6 +3,4 @@
 /// <summary>
 /// Класс клиента
 /// </summary>
-public class Customer : Person
-{
-}
+public class Customer : Person;

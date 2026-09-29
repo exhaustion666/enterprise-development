@@ -36,13 +36,13 @@ public class SalonAnalytics
             .Where(booking => booking.SpecialistId == specialistId)
             .OrderBy(booking => booking.StartAt)];
 
-        /// Если у мастера меньше двух записей "окошек" нет
+        // Если у мастера меньше двух записей "окошек" нет
         if (specialistBookings.Length < 2)
         {
             return [];
         }
 
-        /// Свободные "окошки"
+        // Свободные "окошки"
         var windows = new List<TimeSlot>();
 
         for (var i = 0; i < specialistBookings.Length - 1; i++)
@@ -52,7 +52,7 @@ public class SalonAnalytics
             var windowStart = GetBookingEnd(currentBooking);
             var windowEnd = nextBooking.StartAt;
 
-            /// Свободные "окошки" между соседними записями
+            // Свободные "окошки" между соседними записями
             if (windowStart >= windowEnd)
             {
                 continue;
