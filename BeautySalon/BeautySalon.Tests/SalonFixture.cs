@@ -28,11 +28,12 @@ public class SalonFixture
     /// </summary>
     public List<Booking> Bookings { get; } = [];
 
+    /// <summary>
+    /// Создает набор тестовых данных салона
+    /// </summary>
     public SalonFixture()
     {
-        /// <summary>
-        /// Мастера
-        /// </summary>
+        // Мастера
         var specialist1 = new Specialist
         {
             Id = 0,
@@ -175,21 +176,19 @@ public class SalonFixture
 
         Specialists.AddRange(
         [
-        specialist1,
-        specialist2,
-        specialist3,
-        specialist4,
-        specialist5,
-        specialist6,
-        specialist7,
-        specialist8,
-        specialist9,
-        specialist10
+            specialist1,
+            specialist2,
+            specialist3,
+            specialist4,
+            specialist5,
+            specialist6,
+            specialist7,
+            specialist8,
+            specialist9,
+            specialist10
         ]);
 
-        /// <summary>
-        /// Клиенты
-        /// </summary>
+        // Клиенты
         var customer1 = new Customer
         {
             Id = 0,
@@ -301,21 +300,19 @@ public class SalonFixture
 
         Customers.AddRange(
         [
-        customer1,
-        customer2,
-        customer3,
-        customer4,
-        customer5,
-        customer6,
-        customer7,
-        customer8,
-        customer9,
-        customer10
+            customer1,
+            customer2,
+            customer3,
+            customer4,
+            customer5,
+            customer6,
+            customer7,
+            customer8,
+            customer9,
+            customer10
         ]);
 
-        /// <summary>
-        /// Услуги
-        /// </summary>
+        // Услуги
         var service1 = new BeautyService
         {
             Id = 0,
@@ -408,155 +405,144 @@ public class SalonFixture
 
         BeautyServices.AddRange(
         [
-        service1,
-        service2,
-        service3,
-        service4,
-        service5,
-        service6,
-        service7,
-        service8,
-        service9,
-        service10
+            service1,
+            service2,
+            service3,
+            service4,
+            service5,
+            service6,
+            service7,
+            service8,
+            service9,
+            service10
         ]);
 
-        /// <summary>
-        /// Время для тестов
-        /// </summary>
-        var anchorDate = new DateTimeOffset(
-            2026,
-            9,
-            1,
-            10,
-            0,
-            0,
-            TimeSpan.Zero);
+        // Время для тестов
+        DateTimeOffset anchorDate = new(2026, 9, 1, 10, 0, 0, TimeSpan.Zero);
 
-        /// <summary>
-        /// Записи на услуги
-        /// </summary>
+        // Записи на услуги
         Bookings.AddRange(
         [
             new Booking
-        {
-            Id = 0,
-            StartAt = anchorDate,
-            SpecialistId = specialist1.Id,
-            Specialist = specialist1,
-            CustomerId = customer1.Id,
-            Customer = customer1,
-            BeautyServiceId = service1.Id,
-            BeautyService = service1,
-            IsRegularCustomer = true
-        },
-        new Booking
-        {
-            Id = 1,
-            StartAt = anchorDate.AddMinutes(90),
-            SpecialistId = specialist1.Id,
-            Specialist = specialist1,
-            CustomerId = customer1.Id,
-            Customer = customer1,
-            BeautyServiceId = service4.Id,
-            BeautyService = service4,
-            IsRegularCustomer = true
-        },
-        new Booking
-        {
-            Id = 2,
-            StartAt = anchorDate.AddHours(5),
-            SpecialistId = specialist1.Id,
-            Specialist = specialist1,
-            CustomerId = customer3.Id,
-            Customer = customer3,
-            BeautyServiceId = service1.Id,
-            BeautyService = service1,
-            IsRegularCustomer = false
-        },
-        new Booking
-        {
-            Id = 3,
-            StartAt = anchorDate.AddHours(2),
-            SpecialistId = specialist2.Id,
-            Specialist = specialist2,
-            CustomerId = customer3.Id,
-            Customer = customer3,
-            BeautyServiceId = service2.Id,
-            BeautyService = service2,
-            IsRegularCustomer = false
-        },
-        new Booking
-        {
-            Id = 4,
-            StartAt = anchorDate.AddDays(1).AddHours(2),
-            SpecialistId = specialist2.Id,
-            Specialist = specialist2,
-            CustomerId = customer2.Id,
-            Customer = customer2,
-            BeautyServiceId = service5.Id,
-            BeautyService = service5,
-            IsRegularCustomer = false
-        },
-        new Booking
-        {
-            Id = 5,
-            StartAt = anchorDate.AddHours(2),
-            SpecialistId = specialist3.Id,
-            Specialist = specialist3,
-            CustomerId = customer2.Id,
-            Customer = customer2,
-            BeautyServiceId = service3.Id,
-            BeautyService = service3,
-            IsRegularCustomer = true
-        },
-        new Booking
-        {
-            Id = 6,
-            StartAt = anchorDate.AddDays(3).AddHours(1),
-            SpecialistId = specialist4.Id,
-            Specialist = specialist4,
-            CustomerId = customer4.Id,
-            Customer = customer4,
-            BeautyServiceId = service7.Id,
-            BeautyService = service7,
-            IsRegularCustomer = true
-        },
-        new Booking
-        {
-            Id = 7,
-            StartAt = anchorDate.AddDays(4).AddHours(3),
-            SpecialistId = specialist5.Id,
-            Specialist = specialist5,
-            CustomerId = customer5.Id,
-            Customer = customer5,
-            BeautyServiceId = service8.Id,
-            BeautyService = service8,
-            IsRegularCustomer = false
-        },
-        new Booking
-        {
-            Id = 8,
-            StartAt = anchorDate.AddDays(5).AddHours(2),
-            SpecialistId = specialist8.Id,
-            Specialist = specialist8,
-            CustomerId = customer8.Id,
-            Customer = customer8,
-            BeautyServiceId = service9.Id,
-            BeautyService = service9,
-            IsRegularCustomer = true
-        },
-        new Booking
-        {
-            Id = 9,
-            StartAt = anchorDate.AddDays(6).AddHours(4),
-            SpecialistId = specialist10.Id,
-            Specialist = specialist10,
-            CustomerId = customer10.Id,
-            Customer = customer10,
-            BeautyServiceId = service2.Id,
-            BeautyService = service2,
-            IsRegularCustomer = false
-        }
+            {
+                Id = 0,
+                StartAt = anchorDate,
+                SpecialistId = specialist1.Id,
+                Specialist = specialist1,
+                CustomerId = customer1.Id,
+                Customer = customer1,
+                BeautyServiceId = service1.Id,
+                BeautyService = service1,
+                IsRegularCustomer = true
+            },
+            new Booking
+            {
+                Id = 1,
+                StartAt = anchorDate.AddMinutes(90),
+                SpecialistId = specialist1.Id,
+                Specialist = specialist1,
+                CustomerId = customer1.Id,
+                Customer = customer1,
+                BeautyServiceId = service4.Id,
+                BeautyService = service4,
+                IsRegularCustomer = true
+            },
+            new Booking
+            {
+                Id = 2,
+                StartAt = anchorDate.AddHours(5),
+                SpecialistId = specialist1.Id,
+                Specialist = specialist1,
+                CustomerId = customer3.Id,
+                Customer = customer3,
+                BeautyServiceId = service1.Id,
+                BeautyService = service1,
+                IsRegularCustomer = false
+            },
+            new Booking
+            {
+                Id = 3,
+                StartAt = anchorDate.AddHours(2),
+                SpecialistId = specialist2.Id,
+                Specialist = specialist2,
+                CustomerId = customer3.Id,
+                Customer = customer3,
+                BeautyServiceId = service2.Id,
+                BeautyService = service2,
+                IsRegularCustomer = false
+            },
+            new Booking
+            {
+                Id = 4,
+                StartAt = anchorDate.AddDays(1).AddHours(2),
+                SpecialistId = specialist2.Id,
+                Specialist = specialist2,
+                CustomerId = customer2.Id,
+                Customer = customer2,
+                BeautyServiceId = service5.Id,
+                BeautyService = service5,
+                IsRegularCustomer = false
+            },
+            new Booking
+            {
+                Id = 5,
+                StartAt = anchorDate.AddHours(2),
+                SpecialistId = specialist3.Id,
+                Specialist = specialist3,
+                CustomerId = customer2.Id,
+                Customer = customer2,
+                BeautyServiceId = service3.Id,
+                BeautyService = service3,
+                IsRegularCustomer = true
+            },
+            new Booking
+            {
+                Id = 6,
+                StartAt = anchorDate.AddDays(3).AddHours(1),
+                SpecialistId = specialist4.Id,
+                Specialist = specialist4,
+                CustomerId = customer4.Id,
+                Customer = customer4,
+                BeautyServiceId = service7.Id,
+                BeautyService = service7,
+                IsRegularCustomer = true
+            },
+            new Booking
+            {
+                Id = 7,
+                StartAt = anchorDate.AddDays(4).AddHours(3),
+                SpecialistId = specialist5.Id,
+                Specialist = specialist5,
+                CustomerId = customer5.Id,
+                Customer = customer5,
+                BeautyServiceId = service8.Id,
+                BeautyService = service8,
+                IsRegularCustomer = false
+            },
+            new Booking
+            {
+                Id = 8,
+                StartAt = anchorDate.AddDays(5).AddHours(2),
+                SpecialistId = specialist8.Id,
+                Specialist = specialist8,
+                CustomerId = customer8.Id,
+                Customer = customer8,
+                BeautyServiceId = service9.Id,
+                BeautyService = service9,
+                IsRegularCustomer = true
+            },
+            new Booking
+            {
+                Id = 9,
+                StartAt = anchorDate.AddDays(6).AddHours(4),
+                SpecialistId = specialist10.Id,
+                Specialist = specialist10,
+                CustomerId = customer10.Id,
+                Customer = customer10,
+                BeautyServiceId = service2.Id,
+                BeautyService = service2,
+                IsRegularCustomer = false
+            }
         ]);
     }
 }
