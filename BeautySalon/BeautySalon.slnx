@@ -1,4 +1,8 @@
-﻿<Solution>
-  <Project Path="BeautySalon.Domain/BeautySalon.Domain.csproj" />
-  <Project Path="BeautySalon.Tests/BeautySalon.Tests.csproj" />
+<Solution>
+  <Project Path="src/BeautySalon.Domain/BeautySalon.Domain.csproj" />
+  <Project Path="src/BeautySalon.Contracts/BeautySalon.Contracts.csproj" />
+  <Project Path="src/BeautySalon.Application/BeautySalon.Application.csproj" />
+  <Project Path="src/BeautySalon.Infrastructure.InMemory/BeautySalon.Infrastructure.InMemory.csproj" />
+  <Project Path="src/BeautySalon.Api/BeautySalon.Api.csproj" />
+  <Project Path="tests/BeautySalon.Tests/BeautySalon.Tests.csproj" />
 </Solution>
