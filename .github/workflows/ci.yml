@@ -38,4 +38,4 @@ jobs:
 
       - name: Test
         working-directory: BeautySalon
-        run: dotnet test BeautySalon.Tests/BeautySalon.Tests.csproj --configuration Release --no-build
+        run: dotnet test tests/BeautySalon.Tests/BeautySalon.Tests.csproj --configuration Release --no-build

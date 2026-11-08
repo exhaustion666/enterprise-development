@@ -53,7 +53,7 @@ public sealed class BeautyServiceController(ICrudService<BeautyServiceDto, Beaut
         if (logger.IsEnabled(LogLevel.Information))
         {
             logger.LogInformation(
-                "Создан клиент с ID {CustomerId}",
+                "Создана услуга с ID {CustomerId}",
                 created.Id);
         }
         return CreatedAtRoute("BeautyServiceById", new { id = created.Id }, created);

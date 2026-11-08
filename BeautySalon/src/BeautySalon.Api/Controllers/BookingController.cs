@@ -53,7 +53,7 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
         if (logger.IsEnabled(LogLevel.Information))
         {
             logger.LogInformation(
-                "Создан клиент с ID {CustomerId}",
+                "Создана запись с ID {CustomerId}",
                 created.Id);
         }
         return CreatedAtRoute("BookingById", new { id = created.Id }, created);
