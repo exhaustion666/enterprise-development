@@ -18,7 +18,7 @@ public sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : I
         Exception exception,
         CancellationToken cancellationToken)
     {
-        var (status, title) = exception switch
+        (var status, var title) = exception switch
         {
             KeyNotFoundException => (StatusCodes.Status404NotFound, "Ресурс не найден"),
             EntityConflictException => (StatusCodes.Status409Conflict, "Конфликт данных"),

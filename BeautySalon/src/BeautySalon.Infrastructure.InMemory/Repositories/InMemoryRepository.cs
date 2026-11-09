@@ -103,18 +103,12 @@ public class InMemoryRepository<TEntity> : IRepository<TEntity, int>
 
         lock (_sync)
         {
-            if (!_entities.TryGetValue(id, out TEntity? entity))
-            {
-                return Task.FromResult(false);
-            }
-
-            if (_isReferenced?.Invoke(entity) == true)
-            {
-                throw new EntityConflictException(
-                    "Нельзя удалить сущность, пока на неё ссылаются другие записи.");
-            }
-
-            return Task.FromResult(_entities.Remove(id));
+            return !_entities.TryGetValue(id, out TEntity? entity)
+                ? Task.FromResult(false)
+                : _isReferenced?.Invoke(entity) == true
+                ? throw new EntityConflictException(
+                    "Нельзя удалить сущность, пока на неё ссылаются другие записи.")
+                : Task.FromResult(_entities.Remove(id));
         }
     }
 

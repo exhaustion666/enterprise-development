@@ -18,8 +18,10 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<SpecialistDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<SpecialistDto>>> GetAllAsync() =>
-        Ok(await service.GetAllAsync());
+    public async Task<ActionResult<IReadOnlyList<SpecialistDto>>> GetAllAsync()
+    {
+        return Ok(await service.GetAllAsync());
+    }
 
     /// <summary>
     /// Возвращает специалиста по идентификатору
@@ -32,12 +34,7 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
         [FromRoute, Range(0, int.MaxValue)] int id)
     {
         SpecialistDto? specialist = await service.GetByIdAsync(id);
-        if (specialist is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(specialist);
+        return specialist is null ? (ActionResult<SpecialistDto>)NotFound() : (ActionResult<SpecialistDto>)Ok(specialist);
     }
 
     /// <summary>

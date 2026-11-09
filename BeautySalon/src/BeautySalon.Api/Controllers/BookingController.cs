@@ -18,8 +18,10 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<BookingDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetAllAsync() =>
-        Ok(await service.GetAllAsync());
+    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetAllAsync()
+    {
+        return Ok(await service.GetAllAsync());
+    }
 
     /// <summary>
     /// Возвращает запись по идентификатору
@@ -32,12 +34,7 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
         [FromRoute, Range(0, int.MaxValue)] int id)
     {
         BookingDto? booking = await service.GetByIdAsync(id);
-        if (booking is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(booking);
+        return booking is null ? (ActionResult<BookingDto>)NotFound() : (ActionResult<BookingDto>)Ok(booking);
     }
 
     /// <summary>

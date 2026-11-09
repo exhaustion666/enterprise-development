@@ -14,11 +14,11 @@ public static class ServiceCollectionExtensions
     /// </summary>
     public static IServiceCollection AddBeautySalonInMemoryInfrastructure(this IServiceCollection services)
     {
-        services.AddSingleton<InMemoryStorage>();
-        services.AddSingleton<IRepository<Customer, int>>(provider => provider.GetRequiredService<InMemoryStorage>().Customers);
-        services.AddSingleton<IRepository<Specialist, int>>(provider => provider.GetRequiredService<InMemoryStorage>().Specialists);
-        services.AddSingleton<IRepository<BeautyService, int>>(provider => provider.GetRequiredService<InMemoryStorage>().BeautyServices);
-        services.AddSingleton<IRepository<Booking, int>>(provider => provider.GetRequiredService<InMemoryStorage>().Bookings);
+        _ = services.AddSingleton<InMemoryStorage>();
+        _ = services.AddSingleton<IRepository<Customer, int>>(provider => provider.GetRequiredService<InMemoryStorage>().Customers);
+        _ = services.AddSingleton<IRepository<Specialist, int>>(provider => provider.GetRequiredService<InMemoryStorage>().Specialists);
+        _ = services.AddSingleton<IRepository<BeautyService, int>>(provider => provider.GetRequiredService<InMemoryStorage>().BeautyServices);
+        _ = services.AddSingleton<IRepository<Booking, int>>(provider => provider.GetRequiredService<InMemoryStorage>().Bookings);
         return services;
     }
 }

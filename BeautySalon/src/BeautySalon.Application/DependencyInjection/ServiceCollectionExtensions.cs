@@ -17,28 +17,28 @@ public static class ServiceCollectionExtensions
     /// </summary>
     public static IServiceCollection AddBeautySalonApplication(this IServiceCollection services)
     {
-        services.AddSingleton<CustomerMapper>();
-        services.AddSingleton<SpecialistMapper>();
-        services.AddSingleton<BeautyServiceMapper>();
-        services.AddSingleton<BookingMapper>();
-        services.AddSingleton<IEntityMapper<Customer, CustomerDto, CustomerEditDto>>(
+        _ = services.AddSingleton<CustomerMapper>();
+        _ = services.AddSingleton<SpecialistMapper>();
+        _ = services.AddSingleton<BeautyServiceMapper>();
+        _ = services.AddSingleton<BookingMapper>();
+        _ = services.AddSingleton<IEntityMapper<Customer, CustomerDto, CustomerEditDto>>(
             provider => provider.GetRequiredService<CustomerMapper>());
-        services.AddSingleton<IEntityMapper<Specialist, SpecialistDto, SpecialistEditDto>>(
+        _ = services.AddSingleton<IEntityMapper<Specialist, SpecialistDto, SpecialistEditDto>>(
             provider => provider.GetRequiredService<SpecialistMapper>());
-        services.AddSingleton<IEntityMapper<BeautyService, BeautyServiceDto, BeautyServiceEditDto>>(
+        _ = services.AddSingleton<IEntityMapper<BeautyService, BeautyServiceDto, BeautyServiceEditDto>>(
             provider => provider.GetRequiredService<BeautyServiceMapper>());
-        services.AddSingleton<IEntityMapper<Booking, BookingDto, BookingEditDto>>(
+        _ = services.AddSingleton<IEntityMapper<Booking, BookingDto, BookingEditDto>>(
             provider => provider.GetRequiredService<BookingMapper>());
 
-        services.AddScoped<ICrudService<CustomerDto, CustomerEditDto>,
+        _ = services.AddScoped<ICrudService<CustomerDto, CustomerEditDto>,
             CrudService<Customer, CustomerDto, CustomerEditDto>>();
-        services.AddScoped<ICrudService<SpecialistDto, SpecialistEditDto>,
+        _ = services.AddScoped<ICrudService<SpecialistDto, SpecialistEditDto>,
             CrudService<Specialist, SpecialistDto, SpecialistEditDto>>();
-        services.AddScoped<ICrudService<BeautyServiceDto, BeautyServiceEditDto>,
+        _ = services.AddScoped<ICrudService<BeautyServiceDto, BeautyServiceEditDto>,
             CrudService<BeautyService, BeautyServiceDto, BeautyServiceEditDto>>();
-        services.AddScoped<ICrudService<BookingDto, BookingEditDto>,
+        _ = services.AddScoped<ICrudService<BookingDto, BookingEditDto>,
             CrudService<Booking, BookingDto, BookingEditDto>>();
-        services.AddScoped<ISalonAnalyticsService, SalonAnalyticsService>();
+        _ = services.AddScoped<ISalonAnalyticsService, SalonAnalyticsService>();
         return services;
     }
 }

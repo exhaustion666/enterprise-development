@@ -19,7 +19,7 @@ public sealed class BookingRepository(
     /// </summary>
     public override async Task<IReadOnlyList<Booking>> GetAllAsync()
     {
-        var items = await base.GetAllAsync();
+        IReadOnlyList<Booking> items = await base.GetAllAsync();
 
         foreach (Booking booking in items)
         {
@@ -77,20 +77,26 @@ public sealed class BookingRepository(
     /// <summary>
     /// Проверяет, используется ли клиент в существующих записях
     /// </summary>
-    public bool ReferencesCustomer(int customerId) =>
-        Any(booking => booking.CustomerId == customerId);
+    public bool ReferencesCustomer(int customerId)
+    {
+        return Any(booking => booking.CustomerId == customerId);
+    }
 
     /// <summary>
     /// Проверяет, используется ли мастер в существующих записях
     /// </summary>
-    public bool ReferencesSpecialist(int specialistId) =>
-        Any(booking => booking.SpecialistId == specialistId);
+    public bool ReferencesSpecialist(int specialistId)
+    {
+        return Any(booking => booking.SpecialistId == specialistId);
+    }
 
     /// <summary>
     /// Проверяет, используется ли услуга в существующих записях
     /// </summary>
-    public bool ReferencesBeautyService(int beautyServiceId) =>
-        Any(booking => booking.BeautyServiceId == beautyServiceId);
+    public bool ReferencesBeautyService(int beautyServiceId)
+    {
+        return Any(booking => booking.BeautyServiceId == beautyServiceId);
+    }
 
     /// <summary>
     /// Загружает клиента, мастера и услугу, связанные с записью

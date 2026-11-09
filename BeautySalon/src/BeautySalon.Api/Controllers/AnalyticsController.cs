@@ -24,7 +24,7 @@ public sealed class AnalyticsController(
     public async Task<ActionResult<IReadOnlyList<SpecialistDto>>> GetExperiencedSpecialistsAsync(
         [FromQuery, Range(0, 80)] int minimumExperienceYears = 5)
     {
-        var specialists = await analyticsService.GetExperiencedSpecialistsAsync(minimumExperienceYears);
+        IReadOnlyList<SpecialistDto> specialists = await analyticsService.GetExperiencedSpecialistsAsync(minimumExperienceYears);
 
         return Ok(specialists);
     }
@@ -39,7 +39,7 @@ public sealed class AnalyticsController(
     public async Task<ActionResult<IReadOnlyList<TimeSlotDto>>> GetSpecialistWindowsAsync(
         [FromRoute, Range(0, int.MaxValue)] int specialistId)
     {
-        var windows = await analyticsService.GetSpecialistWindowsAsync(specialistId);
+        IReadOnlyList<TimeSlotDto>? windows = await analyticsService.GetSpecialistWindowsAsync(specialistId);
 
         if (windows is null)
         {
@@ -62,7 +62,7 @@ public sealed class AnalyticsController(
     public async Task<ActionResult<IReadOnlyList<PopularServiceDto>>> GetTopServicesAsync(
         [FromQuery, Range(1, 100)] int count = 5)
     {
-        var services = await analyticsService.GetTopServicesAsync(count);
+        IReadOnlyList<PopularServiceDto> services = await analyticsService.GetTopServicesAsync(count);
 
         return Ok(services);
     }
@@ -106,7 +106,7 @@ public sealed class AnalyticsController(
     [ProducesResponseType(typeof(IReadOnlyList<CustomerDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<CustomerDto>>> GetCustomersWithMultipleSpecialistsAsync()
     {
-        var customers = await analyticsService.GetCustomersWithMultipleSpecialistsAsync();
+        IReadOnlyList<CustomerDto> customers = await analyticsService.GetCustomersWithMultipleSpecialistsAsync();
 
         return Ok(customers);
     }

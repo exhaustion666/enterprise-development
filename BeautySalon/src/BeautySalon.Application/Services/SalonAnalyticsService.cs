@@ -4,6 +4,7 @@ using BeautySalon.Contracts.Dtos;
 using BeautySalon.Contracts.Interfaces;
 using BeautySalon.Domain.Entities;
 using BeautySalon.Domain.Interfaces;
+using BeautySalon.Domain.Models;
 
 namespace BeautySalon.Application.Services;
 
@@ -27,7 +28,7 @@ public sealed class SalonAnalyticsService(
     {
         ArgumentOutOfRangeException.ThrowIfNegative(minimumExperienceYears);
 
-        var specialists = await specialistRepository.GetAllAsync();
+        IReadOnlyList<Specialist> specialists = await specialistRepository.GetAllAsync();
 
         return [.. SalonAnalytics.GetExperiencedSpecialists(
             specialists,
@@ -50,9 +51,9 @@ public sealed class SalonAnalyticsService(
             return null;
         }
 
-        var bookings = await bookingRepository.GetAllAsync();
+        IReadOnlyList<Booking> bookings = await bookingRepository.GetAllAsync();
 
-        var windows = SalonAnalytics.GetSpecialistWindows(
+        IReadOnlyList<TimeSlot> windows = SalonAnalytics.GetSpecialistWindows(
             bookings,
             specialistId);
 
@@ -72,8 +73,8 @@ public sealed class SalonAnalyticsService(
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
-        var bookings = await bookingRepository.GetAllAsync();
-        var services = await beautyServiceRepository.GetAllAsync();
+        IReadOnlyList<Booking> bookings = await bookingRepository.GetAllAsync();
+        IReadOnlyList<BeautyService> services = await beautyServiceRepository.GetAllAsync();
 
         var servicesById = services.ToDictionary(service => service.Id);
 
@@ -100,7 +101,7 @@ public sealed class SalonAnalyticsService(
                 "Начало периода должно быть раньше его окончания.");
         }
 
-        var bookings = await bookingRepository.GetAllAsync();
+        IReadOnlyList<Booking> bookings = await bookingRepository.GetAllAsync();
 
         return SalonAnalytics.GetRepeatBookingCount(bookings, from, to);
     }
@@ -110,8 +111,8 @@ public sealed class SalonAnalyticsService(
     /// </summary>
     public async Task<IReadOnlyList<CustomerDto>> GetCustomersWithMultipleSpecialistsAsync()
     {
-        var customers = await customerRepository.GetAllAsync();
-        var bookings = await bookingRepository.GetAllAsync();
+        IReadOnlyList<Customer> customers = await customerRepository.GetAllAsync();
+        IReadOnlyList<Booking> bookings = await bookingRepository.GetAllAsync();
 
         return [.. SalonAnalytics.GetCustomersWithMultipleSpecialists(
             customers,

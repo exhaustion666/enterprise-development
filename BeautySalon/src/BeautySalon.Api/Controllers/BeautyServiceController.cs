@@ -18,8 +18,10 @@ public sealed class BeautyServiceController(ICrudService<BeautyServiceDto, Beaut
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<BeautyServiceDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<BeautyServiceDto>>> GetAllAsync() =>
-        Ok(await service.GetAllAsync());
+    public async Task<ActionResult<IReadOnlyList<BeautyServiceDto>>> GetAllAsync()
+    {
+        return Ok(await service.GetAllAsync());
+    }
 
     /// <summary>
     /// Возвращает услугу по идентификатору
@@ -32,12 +34,7 @@ public sealed class BeautyServiceController(ICrudService<BeautyServiceDto, Beaut
         [FromRoute, Range(0, int.MaxValue)] int id)
     {
         BeautyServiceDto? beautyService = await service.GetByIdAsync(id);
-        if (beautyService is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(beautyService);
+        return beautyService is null ? (ActionResult<BeautyServiceDto>)NotFound() : (ActionResult<BeautyServiceDto>)Ok(beautyService);
     }
 
     /// <summary>

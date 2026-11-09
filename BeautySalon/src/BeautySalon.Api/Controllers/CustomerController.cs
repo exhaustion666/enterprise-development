@@ -18,8 +18,10 @@ public sealed class CustomerController(ICrudService<CustomerDto, CustomerEditDto
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<CustomerDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<CustomerDto>>> GetAllAsync() =>
-        Ok(await service.GetAllAsync());
+    public async Task<ActionResult<IReadOnlyList<CustomerDto>>> GetAllAsync()
+    {
+        return Ok(await service.GetAllAsync());
+    }
 
     /// <summary>
     /// Возвращает клиента по идентификатору
@@ -32,12 +34,7 @@ public sealed class CustomerController(ICrudService<CustomerDto, CustomerEditDto
         [FromRoute, Range(0, int.MaxValue)] int id)
     {
         CustomerDto? customer = await service.GetByIdAsync(id);
-        if (customer is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(customer);
+        return customer is null ? (ActionResult<CustomerDto>)NotFound() : (ActionResult<CustomerDto>)Ok(customer);
     }
 
     /// <summary>

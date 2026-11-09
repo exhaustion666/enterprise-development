@@ -4,7 +4,7 @@ using BeautySalon.Infrastructure.InMemory.DependencyInjection;
 using Microsoft.OpenApi;
 using System.Text.Json.Serialization;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -30,15 +30,15 @@ builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddBeautySalonApplication();
 builder.Services.AddBeautySalonInMemoryInfrastructure();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    _ = app.UseSwagger();
+    _ = app.UseSwaggerUI(options =>
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "BeautySalon API v1"));
 }
 
