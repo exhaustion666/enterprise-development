@@ -25,7 +25,7 @@ public static class BeautySalonDataSeeder
         // Мастера
         var specialist1 = new Specialist
         {
-            Id = 0,
+            Id = 1,
             LastName = "Иванова",
             FirstName = "Анна",
             Patronymic = "Сергеевна",
@@ -39,7 +39,7 @@ public static class BeautySalonDataSeeder
 
         var specialist2 = new Specialist
         {
-            Id = 1,
+            Id = 2,
             LastName = "Петрова",
             FirstName = "Мария",
             Patronymic = "Игоревна",
@@ -53,7 +53,7 @@ public static class BeautySalonDataSeeder
 
         var specialist3 = new Specialist
         {
-            Id = 2,
+            Id = 3,
             LastName = "Мансуров",
             FirstName = "Роман",
             Patronymic = "Михайлович",
@@ -67,7 +67,7 @@ public static class BeautySalonDataSeeder
 
         var specialist4 = new Specialist
         {
-            Id = 3,
+            Id = 4,
             LastName = "Ковалёва",
             FirstName = "Ольга",
             Patronymic = "Николаевна",
@@ -81,7 +81,7 @@ public static class BeautySalonDataSeeder
 
         var specialist5 = new Specialist
         {
-            Id = 4,
+            Id = 5,
             LastName = "Черкашин",
             FirstName = "Данила",
             Patronymic = "Станиславович",
@@ -95,7 +95,7 @@ public static class BeautySalonDataSeeder
 
         var specialist6 = new Specialist
         {
-            Id = 5,
+            Id = 6,
             LastName = "Васильева",
             FirstName = "Екатерина",
             Patronymic = "Дмитриевна",
@@ -109,7 +109,7 @@ public static class BeautySalonDataSeeder
 
         var specialist7 = new Specialist
         {
-            Id = 6,
+            Id = 7,
             LastName = "Соколов",
             FirstName = "Артем",
             Patronymic = "Михайлович",
@@ -123,7 +123,7 @@ public static class BeautySalonDataSeeder
 
         var specialist8 = new Specialist
         {
-            Id = 7,
+            Id = 8,
             LastName = "Попова",
             FirstName = "Наталья",
             Patronymic = "Сергеевна",
@@ -137,7 +137,7 @@ public static class BeautySalonDataSeeder
 
         var specialist9 = new Specialist
         {
-            Id = 8,
+            Id = 9,
             LastName = "Новиков",
             FirstName = "Роман",
             Patronymic = "Викторович",
@@ -151,7 +151,7 @@ public static class BeautySalonDataSeeder
 
         var specialist10 = new Specialist
         {
-            Id = 9,
+            Id = 10,
             LastName = "Зайцева",
             FirstName = "Елена",
             Patronymic = "Васильевна",
@@ -163,8 +163,8 @@ public static class BeautySalonDataSeeder
             ExperienceYears = 6
         };
 
-        Specialist[] specialists =
-        [
+        var specialists = new[]
+        {
             specialist1,
             specialist2,
             specialist3,
@@ -175,12 +175,12 @@ public static class BeautySalonDataSeeder
             specialist8,
             specialist9,
             specialist10
-        ];
+        };
 
         // Клиенты
         var customer1 = new Customer
         {
-            Id = 0,
+            Id = 1,
             LastName = "Смирнова",
             FirstName = "Ольга",
             Patronymic = "Владимировна",
@@ -191,7 +191,7 @@ public static class BeautySalonDataSeeder
 
         var customer2 = new Customer
         {
-            Id = 1,
+            Id = 2,
             LastName = "Кузнецов",
             FirstName = "Игорь",
             Patronymic = "Николаевич",
@@ -202,7 +202,7 @@ public static class BeautySalonDataSeeder
 
         var customer3 = new Customer
         {
-            Id = 2,
+            Id = 3,
             LastName = "Васильева",
             FirstName = "Елена",
             Gender = Gender.Female,
@@ -212,7 +212,7 @@ public static class BeautySalonDataSeeder
 
         var customer4 = new Customer
         {
-            Id = 3,
+            Id = 4,
             LastName = "Соколова",
             FirstName = "Мария",
             Patronymic = "Сергеевна",
@@ -223,7 +223,7 @@ public static class BeautySalonDataSeeder
 
         var customer5 = new Customer
         {
-            Id = 4,
+            Id = 5,
             LastName = "Лебедев",
             FirstName = "Андрей",
             Patronymic = "Васильевич",
@@ -234,7 +234,7 @@ public static class BeautySalonDataSeeder
 
         var customer6 = new Customer
         {
-            Id = 5,
+            Id = 6,
             LastName = "Козлова",
             FirstName = "Наталья",
             Patronymic = "Игоревна",
@@ -245,7 +245,7 @@ public static class BeautySalonDataSeeder
 
         var customer7 = new Customer
         {
-            Id = 6,
+            Id = 7,
             LastName = "Новиков",
             FirstName = "Максим",
             Patronymic = "Александрович",
@@ -256,7 +256,7 @@ public static class BeautySalonDataSeeder
 
         var customer8 = new Customer
         {
-            Id = 7,
+            Id = 8,
             LastName = "Морозова",
             FirstName = "Анна",
             Patronymic = "Константиновна",
@@ -267,7 +267,7 @@ public static class BeautySalonDataSeeder
 
         var customer9 = new Customer
         {
-            Id = 8,
+            Id = 9,
             LastName = "Волков",
             FirstName = "Сергей",
             Patronymic = "Дмитриевич",
@@ -278,7 +278,7 @@ public static class BeautySalonDataSeeder
 
         var customer10 = new Customer
         {
-            Id = 9,
+            Id = 10,
             LastName = "Белова",
             FirstName = "Юлия",
             Patronymic = "Андреевна",
@@ -287,8 +287,8 @@ public static class BeautySalonDataSeeder
             Phone = "+79000000020"
         };
 
-        Customer[] customers =
-        [
+        var customers = new[]
+        {
             customer1,
             customer2,
             customer3,
@@ -299,12 +299,12 @@ public static class BeautySalonDataSeeder
             customer8,
             customer9,
             customer10
-        ];
+        };
 
         // Услуги
         var service1 = new BeautyService
         {
-            Id = 0,
+            Id = 1,
             Name = "Женская стрижка",
             Category = "Парикмахерские услуги",
             Price = 2500m,
@@ -313,7 +313,7 @@ public static class BeautySalonDataSeeder
 
         var service2 = new BeautyService
         {
-            Id = 1,
+            Id = 2,
             Name = "Маникюр с покрытием",
             Category = "Ногтевой сервис",
             Price = 2000m,
@@ -322,7 +322,7 @@ public static class BeautySalonDataSeeder
 
         var service3 = new BeautyService
         {
-            Id = 2,
+            Id = 3,
             Name = "Мужская стрижка",
             Category = "Парикмахерские услуги",
             Price = 1800m,
@@ -331,7 +331,7 @@ public static class BeautySalonDataSeeder
 
         var service4 = new BeautyService
         {
-            Id = 3,
+            Id = 4,
             Name = "Окрашивание волос",
             Category = "Парикмахерские услуги",
             Price = 6000m,
@@ -340,7 +340,7 @@ public static class BeautySalonDataSeeder
 
         var service5 = new BeautyService
         {
-            Id = 4,
+            Id = 5,
             Name = "Педикюр",
             Category = "Ногтевой сервис",
             Price = 2800m,
@@ -349,7 +349,7 @@ public static class BeautySalonDataSeeder
 
         var service6 = new BeautyService
         {
-            Id = 5,
+            Id = 6,
             Name = "Оформление бровей",
             Category = "Визаж",
             Price = 1200m,
@@ -358,7 +358,7 @@ public static class BeautySalonDataSeeder
 
         var service7 = new BeautyService
         {
-            Id = 6,
+            Id = 7,
             Name = "Чистка лица",
             Category = "Косметология",
             Price = 3500m,
@@ -367,7 +367,7 @@ public static class BeautySalonDataSeeder
 
         var service8 = new BeautyService
         {
-            Id = 7,
+            Id = 8,
             Name = "Расслабляющий массаж",
             Category = "СПА и массаж",
             Price = 4000m,
@@ -376,7 +376,7 @@ public static class BeautySalonDataSeeder
 
         var service9 = new BeautyService
         {
-            Id = 8,
+            Id = 9,
             Name = "Ламинирование ресниц",
             Category = "Визаж",
             Price = 2200m,
@@ -385,15 +385,15 @@ public static class BeautySalonDataSeeder
 
         var service10 = new BeautyService
         {
-            Id = 9,
+            Id = 10,
             Name = "Дневной макияж",
             Category = "Визаж",
             Price = 2500m,
             Duration = TimeSpan.FromMinutes(45)
         };
 
-        BeautyService[] beautyServices =
-        [
+        var beautyServices = new[]
+        {
             service1,
             service2,
             service3,
@@ -404,15 +404,15 @@ public static class BeautySalonDataSeeder
             service8,
             service9,
             service10
-        ];
+        };
 
         // Время для тестов
-        DateTimeOffset anchorDate = new(2026, 9, 1, 10, 0, 0, TimeSpan.Zero);
+        var anchorDate = new DateTimeOffset(2026, 9, 1, 10, 0, 0, TimeSpan.Zero);
 
         // Записи на услуги
         var booking1 = new Booking
         {
-            Id = 0,
+            Id = 1,
             StartAt = anchorDate,
             SpecialistId = specialist1.Id,
             Specialist = specialist1,
@@ -425,7 +425,7 @@ public static class BeautySalonDataSeeder
 
         var booking2 = new Booking
         {
-            Id = 1,
+            Id = 2,
             StartAt = anchorDate.AddMinutes(90),
             SpecialistId = specialist1.Id,
             Specialist = specialist1,
@@ -438,7 +438,7 @@ public static class BeautySalonDataSeeder
 
         var booking3 = new Booking
         {
-            Id = 2,
+            Id = 3,
             StartAt = anchorDate.AddHours(5),
             SpecialistId = specialist1.Id,
             Specialist = specialist1,
@@ -451,7 +451,7 @@ public static class BeautySalonDataSeeder
 
         var booking4 = new Booking
         {
-            Id = 3,
+            Id = 4,
             StartAt = anchorDate.AddHours(2),
             SpecialistId = specialist2.Id,
             Specialist = specialist2,
@@ -464,7 +464,7 @@ public static class BeautySalonDataSeeder
 
         var booking5 = new Booking
         {
-            Id = 4,
+            Id = 5,
             StartAt = anchorDate.AddDays(1).AddHours(2),
             SpecialistId = specialist2.Id,
             Specialist = specialist2,
@@ -477,7 +477,7 @@ public static class BeautySalonDataSeeder
 
         var booking6 = new Booking
         {
-            Id = 5,
+            Id = 6,
             StartAt = anchorDate.AddHours(2),
             SpecialistId = specialist3.Id,
             Specialist = specialist3,
@@ -490,7 +490,7 @@ public static class BeautySalonDataSeeder
 
         var booking7 = new Booking
         {
-            Id = 6,
+            Id = 7,
             StartAt = anchorDate.AddDays(3).AddHours(1),
             SpecialistId = specialist4.Id,
             Specialist = specialist4,
@@ -503,7 +503,7 @@ public static class BeautySalonDataSeeder
 
         var booking8 = new Booking
         {
-            Id = 7,
+            Id = 8,
             StartAt = anchorDate.AddDays(4).AddHours(3),
             SpecialistId = specialist5.Id,
             Specialist = specialist5,
@@ -516,7 +516,7 @@ public static class BeautySalonDataSeeder
 
         var booking9 = new Booking
         {
-            Id = 8,
+            Id = 9,
             StartAt = anchorDate.AddDays(5).AddHours(2),
             SpecialistId = specialist8.Id,
             Specialist = specialist8,
@@ -529,7 +529,7 @@ public static class BeautySalonDataSeeder
 
         var booking10 = new Booking
         {
-            Id = 9,
+            Id = 10,
             StartAt = anchorDate.AddDays(6).AddHours(4),
             SpecialistId = specialist10.Id,
             Specialist = specialist10,
@@ -540,8 +540,8 @@ public static class BeautySalonDataSeeder
             IsRegularCustomer = false
         };
 
-        Booking[] bookings =
-        [
+        var bookings = new[]
+        {
             booking1,
             booking2,
             booking3,
@@ -552,7 +552,7 @@ public static class BeautySalonDataSeeder
             booking8,
             booking9,
             booking10
-        ];
+        };
 
         return new BeautySalonSeedData(
             specialists,

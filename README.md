@@ -13,7 +13,7 @@ BeautySalon.slnx
 │   ├── BeautySalon.Infrastructure.InMemory/  # InMemory-репозитории и начальные данные
 │   └── BeautySalon.Api/                       # Контроллеры, DI, обработка ошибок, Swagger
 └── tests/
-    └── BeautySalon.Tests/                     # xUnit: аналитические и HTTP-интеграционные тесты
+    └── BeautySalon.Tests/                     # xUnit: аналитические тесты
 ```
 
 `Domain` содержит сущности `Customer`, `Specialist`, `BeautyService`, `Booking` и контракт `IRepository<TEntity>`. `Infrastructure.InMemory` реализует репозитории на основе `Dictionary<int, TEntity>`. API связывает компоненты через DI.
@@ -31,7 +31,7 @@ Swagger UI доступен по адресу `https://localhost:7240/swagger` �
 | Услуги | `/api/beauty-services` | GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}` |
 | Записи | `/api/bookings` | GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}` |
 
-Успешное создание возвращает `201 Created` и заголовок `Location`. Успешное изменение возвращает `200 OK` с DTO, удаление — `204 No Content`. Для отсутствующего объекта возвращается `404 Not Found`. Отрицательные ID проверяются атрибутами `[Range]` и автоматически дают `400 Bad Request` благодаря `[ApiController]`.
+Успешное создание возвращает `201 Created` и заголовок `Location`. Успешное изменение и удаление возвращают `204 No Content`. Для отсутствующего объекта возвращается `404 Not Found`. Отрицательные ID проверяются атрибутами `[Range]` и автоматически дают `400 Bad Request` благодаря `[ApiController]`.
 
 Входные DTO проверяются через атрибуты `Required`, `Range`, `StringLength`, `Phone` и `EnumDataType`.
 

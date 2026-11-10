@@ -25,7 +25,7 @@ public sealed class BeautyServiceEditDto
     /// Цена
     /// </summary>
     [Required]
-    [Range(typeof(decimal), "0.01", "1000000")]
+    [Range(typeof(decimal), "1", "1000000")]
     public decimal? Price { get; init; }
 
     /// <summary>

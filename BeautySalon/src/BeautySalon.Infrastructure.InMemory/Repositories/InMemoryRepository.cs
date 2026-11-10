@@ -49,7 +49,7 @@ public class InMemoryRepository<TEntity> : IRepository<TEntity, int>
     /// </summary>
     public virtual Task<TEntity?> GetByIdAsync(int id)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         lock (_sync)
         {
@@ -79,11 +79,11 @@ public class InMemoryRepository<TEntity> : IRepository<TEntity, int>
     public virtual Task<TEntity?> UpdateAsync(TEntity entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
-        ArgumentOutOfRangeException.ThrowIfNegative(entity.Id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id);
 
         lock (_sync)
         {
-            if (!_entities.TryGetValue(entity.Id, out TEntity? existing) || existing is null)
+            if (!_entities.TryGetValue(entity.Id, out var existing) || existing is null)
             {
                 return Task.FromResult<TEntity?>(null);
             }
@@ -99,16 +99,22 @@ public class InMemoryRepository<TEntity> : IRepository<TEntity, int>
     /// </summary>
     public virtual Task<bool> DeleteAsync(int id)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         lock (_sync)
         {
-            return !_entities.TryGetValue(id, out TEntity? entity)
-                ? Task.FromResult(false)
-                : _isReferenced?.Invoke(entity) == true
-                ? throw new EntityConflictException(
-                    "Нельзя удалить сущность, пока на неё ссылаются другие записи.")
-                : Task.FromResult(_entities.Remove(id));
+            if (!_entities.TryGetValue(id, out var entity) || entity is null)
+            {
+                return Task.FromResult(false);
+            }
+
+            if (_isReferenced?.Invoke(entity) == true)
+            {
+                throw new EntityConflictException(
+                    "Нельзя удалить сущность, пока на неё ссылаются другие записи.");
+            }
+
+            return Task.FromResult(_entities.Remove(id));
         }
     }
 

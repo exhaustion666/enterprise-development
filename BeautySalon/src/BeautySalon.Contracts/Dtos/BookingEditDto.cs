@@ -17,21 +17,21 @@ public sealed class BookingEditDto
     /// Уникальный идентификатор мастера
     /// </summary>
     [Required]
-    [Range(0, int.MaxValue)]
+    [Range(1, int.MaxValue)]
     public int? SpecialistId { get; init; }
 
     /// <summary>
     /// Уникальный идентификатор клиента
     /// </summary>
     [Required]
-    [Range(0, int.MaxValue)]
+    [Range(1, int.MaxValue)]
     public int? CustomerId { get; init; }
 
     /// <summary>
     /// Уникальный идентификатор услуги
     /// </summary>
     [Required]
-    [Range(0, int.MaxValue)]
+    [Range(1, int.MaxValue)]
     public int? BeautyServiceId { get; init; }
 
     /// <summary>
