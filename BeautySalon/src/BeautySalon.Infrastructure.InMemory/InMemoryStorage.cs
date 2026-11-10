@@ -35,7 +35,7 @@ public sealed class InMemoryStorage
     /// </summary>
     public InMemoryStorage()
     {
-        BeautySalonSeedData seed = BeautySalonDataSeeder.CreateInitialData();
+        var seed = BeautySalonDataSeeder.CreateInitialData();
 
         BookingRepository? bookingRepository = null;
 

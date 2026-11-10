@@ -31,9 +31,9 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BookingDto>> GetByIdAsync(
-        [FromRoute, Range(0, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id)
     {
-        BookingDto? booking = await service.GetByIdAsync(id);
+        var booking = await service.GetByIdAsync(id);
         return booking is null ? (ActionResult<BookingDto>)NotFound() : (ActionResult<BookingDto>)Ok(booking);
     }
 
@@ -46,11 +46,11 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     public async Task<ActionResult<BookingDto>> CreateAsync(
         [FromBody] BookingEditDto request)
     {
-        BookingDto created = await service.CreateAsync(request);
+        var created = await service.CreateAsync(request);
         if (logger.IsEnabled(LogLevel.Information))
         {
             logger.LogInformation(
-                "Создана запись с ID {CustomerId}",
+                "Создана запись с ID {BookingId}",
                 created.Id);
         }
         return CreatedAtRoute("BookingById", new { id = created.Id }, created);
@@ -64,10 +64,10 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> UpdateAsync(
-        [FromRoute, Range(0, int.MaxValue)] int id,
+        [FromRoute, Range(1, int.MaxValue)] int id,
         [FromBody] BookingEditDto request)
     {
-        BookingDto? updated = await service.UpdateAsync(id, request);
+        var updated = await service.UpdateAsync(id, request);
 
         if (updated is null)
         {
@@ -91,7 +91,7 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeleteAsync(
-        [FromRoute, Range(0, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id)
     {
         var deleted = await service.DeleteAsync(id);
 

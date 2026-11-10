@@ -19,7 +19,7 @@ public sealed class CrudService<TEntity, TDto, TEditDto>(
     /// </summary>
     public async Task<IReadOnlyList<TDto>> GetAllAsync()
     {
-        IReadOnlyList<TEntity> entities = await repository.GetAllAsync();
+        var entities = await repository.GetAllAsync();
         return [.. entities.Select(mapper.ToDto)];
     }
 
@@ -28,8 +28,8 @@ public sealed class CrudService<TEntity, TDto, TEditDto>(
     /// </summary>
     public async Task<TDto?> GetByIdAsync(int id)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(id);
-        TEntity? entity = await repository.GetByIdAsync(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+        var entity = await repository.GetByIdAsync(id);
         return entity is null ? null : mapper.ToDto(entity);
     }
 
@@ -39,8 +39,8 @@ public sealed class CrudService<TEntity, TDto, TEditDto>(
     public async Task<TDto> CreateAsync(TEditDto dto)
     {
         ArgumentNullException.ThrowIfNull(dto);
-        TEntity entity = mapper.ToEntity(dto, 0);
-        TEntity created = await repository.AddAsync(entity);
+        var entity = mapper.ToEntity(dto, 1);
+        var created = await repository.AddAsync(entity);
         return mapper.ToDto(created);
     }
 
@@ -49,16 +49,16 @@ public sealed class CrudService<TEntity, TDto, TEditDto>(
     /// </summary>
     public async Task<TDto?> UpdateAsync(int id, TEditDto dto)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
         ArgumentNullException.ThrowIfNull(dto);
-        TEntity? existing = await repository.GetByIdAsync(id);
+        var existing = await repository.GetByIdAsync(id);
         if (existing is null)
         {
             return null;
         }
 
-        TEntity entity = mapper.ToEntity(dto, id);
-        TEntity? updated = await repository.UpdateAsync(entity);
+        var entity = mapper.ToEntity(dto, id);
+        var updated = await repository.UpdateAsync(entity);
         return updated is null ? null : mapper.ToDto(updated);
     }
 
@@ -67,7 +67,7 @@ public sealed class CrudService<TEntity, TDto, TEditDto>(
     /// </summary>
     public Task<bool> DeleteAsync(int id)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
         return repository.DeleteAsync(id);
     }
 }

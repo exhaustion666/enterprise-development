@@ -18,7 +18,7 @@ public sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : I
         Exception exception,
         CancellationToken cancellationToken)
     {
-        (var status, var title) = exception switch
+        var (status, title) = exception switch
         {
             KeyNotFoundException => (StatusCodes.Status404NotFound, "Ресурс не найден"),
             EntityConflictException => (StatusCodes.Status409Conflict, "Конфликт данных"),
@@ -38,22 +38,19 @@ public sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : I
                 httpContext.Request.Method, httpContext.Request.Path, status, exception.Message);
         }
 
-        ProblemDetails problem;
+        var problem = new ProblemDetails();
 
         if (status == StatusCodes.Status400BadRequest)
         {
-            ValidationProblemDetails validationProblem = new();
+            var validationProblem = new ValidationProblemDetails();
             validationProblem.Errors.Add("request", [exception.Message]);
             problem = validationProblem;
         }
         else
         {
-            problem = new ProblemDetails
-            {
-                Detail = status == StatusCodes.Status500InternalServerError
-                    ? "Не удалось обработать запрос. Повторите попытку позже."
-                    : exception.Message
-            };
+            problem.Detail = status == StatusCodes.Status500InternalServerError
+                ? "Не удалось обработать запрос. Повторите попытку позже."
+                : exception.Message;
         }
 
         problem.Status = status;

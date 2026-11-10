@@ -31,9 +31,9 @@ public sealed class CustomerController(ICrudService<CustomerDto, CustomerEditDto
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CustomerDto>> GetByIdAsync(
-        [FromRoute, Range(0, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id)
     {
-        CustomerDto? customer = await service.GetByIdAsync(id);
+        var customer = await service.GetByIdAsync(id);
         return customer is null ? (ActionResult<CustomerDto>)NotFound() : (ActionResult<CustomerDto>)Ok(customer);
     }
 
@@ -46,7 +46,7 @@ public sealed class CustomerController(ICrudService<CustomerDto, CustomerEditDto
     public async Task<ActionResult<CustomerDto>> CreateAsync(
         [FromBody] CustomerEditDto request)
     {
-        CustomerDto created = await service.CreateAsync(request);
+        var created = await service.CreateAsync(request);
         if (logger.IsEnabled(LogLevel.Information))
         {
             logger.LogInformation(
@@ -64,10 +64,10 @@ public sealed class CustomerController(ICrudService<CustomerDto, CustomerEditDto
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> UpdateAsync(
-        [FromRoute, Range(0, int.MaxValue)] int id,
+        [FromRoute, Range(1, int.MaxValue)] int id,
         [FromBody] CustomerEditDto request)
     {
-        CustomerDto? updated = await service.UpdateAsync(id, request);
+        var updated = await service.UpdateAsync(id, request);
 
         if (updated is null)
         {
@@ -92,7 +92,7 @@ public sealed class CustomerController(ICrudService<CustomerDto, CustomerEditDto
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> DeleteAsync(
-        [FromRoute, Range(0, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id)
     {
         var deleted = await service.DeleteAsync(id);
 

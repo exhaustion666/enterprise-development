@@ -31,9 +31,9 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SpecialistDto>> GetByIdAsync(
-        [FromRoute, Range(0, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id)
     {
-        SpecialistDto? specialist = await service.GetByIdAsync(id);
+        var specialist = await service.GetByIdAsync(id);
         return specialist is null ? (ActionResult<SpecialistDto>)NotFound() : (ActionResult<SpecialistDto>)Ok(specialist);
     }
 
@@ -46,11 +46,11 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     public async Task<ActionResult<SpecialistDto>> CreateAsync(
         [FromBody] SpecialistEditDto request)
     {
-        SpecialistDto created = await service.CreateAsync(request);
+        var created = await service.CreateAsync(request);
         if (logger.IsEnabled(LogLevel.Information))
         {
             logger.LogInformation(
-                "Создан клиент с ID {CustomerId}",
+                "Создан специалист с ID {SpecialistId}",
                 created.Id);
         }
         return CreatedAtRoute("SpecialistById", new { id = created.Id }, created);
@@ -64,10 +64,10 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> UpdateAsync(
-        [FromRoute, Range(0, int.MaxValue)] int id,
+        [FromRoute, Range(1, int.MaxValue)] int id,
         [FromBody] SpecialistEditDto request)
     {
-        SpecialistDto? updated = await service.UpdateAsync(id, request);
+        var updated = await service.UpdateAsync(id, request);
 
         if (updated is null)
         {
@@ -92,7 +92,7 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> DeleteAsync(
-        [FromRoute, Range(0, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id)
     {
         var deleted = await service.DeleteAsync(id);
 

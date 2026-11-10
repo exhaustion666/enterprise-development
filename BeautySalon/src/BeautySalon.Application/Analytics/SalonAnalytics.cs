@@ -32,9 +32,10 @@ public static class SalonAnalytics
     {
         ArgumentNullException.ThrowIfNull(bookings);
 
-        Booking[] specialistBookings = [.. bookings
+        var specialistBookings = bookings
             .Where(booking => booking.SpecialistId == specialistId)
-            .OrderBy(booking => booking.StartAt)];
+            .OrderBy(booking => booking.StartAt)
+            .ToArray();
 
         // Если у мастера меньше двух записей "окошек" нет
         if (specialistBookings.Length < 2)
@@ -43,14 +44,14 @@ public static class SalonAnalytics
         }
 
         // Свободные "окошки"
-        List<TimeSlot> windows = [];
+        var windows = new List<TimeSlot>();
 
         for (var i = 0; i < specialistBookings.Length - 1; i++)
         {
-            Booking currentBooking = specialistBookings[i];
-            Booking nextBooking = specialistBookings[i + 1];
-            DateTimeOffset windowStart = GetBookingEnd(currentBooking);
-            DateTimeOffset windowEnd = nextBooking.StartAt;
+            var currentBooking = specialistBookings[i];
+            var nextBooking = specialistBookings[i + 1];
+            var windowStart = GetBookingEnd(currentBooking);
+            var windowEnd = nextBooking.StartAt;
 
             // Свободные "окошки" между соседними записями
             if (windowStart >= windowEnd)
@@ -117,13 +118,14 @@ public static class SalonAnalytics
         ArgumentNullException.ThrowIfNull(customers);
         ArgumentNullException.ThrowIfNull(bookings);
 
-        HashSet<int> customerIds = [.. bookings
+        var customerIds = bookings
             .GroupBy(booking => booking.CustomerId)
             .Where(customerBookings => customerBookings
                 .Select(booking => booking.SpecialistId)
                 .Distinct()
                 .Count() > 1)
-            .Select(customerBookings => customerBookings.Key)];
+            .Select(customerBookings => customerBookings.Key)
+            .ToHashSet();
 
         return [.. customers
             .Where(customer => customerIds.Contains(customer.Id))

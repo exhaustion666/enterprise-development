@@ -19,9 +19,9 @@ public sealed class BookingRepository(
     /// </summary>
     public override async Task<IReadOnlyList<Booking>> GetAllAsync()
     {
-        IReadOnlyList<Booking> items = await base.GetAllAsync();
+        var items = await base.GetAllAsync();
 
-        foreach (Booking booking in items)
+        foreach (var booking in items)
         {
             await LoadReferencesAsync(booking);
         }
@@ -35,7 +35,7 @@ public sealed class BookingRepository(
     public override async Task<Booking?> GetByIdAsync(
         int id)
     {
-        Booking? booking = await base.GetByIdAsync(id);
+        var booking = await base.GetByIdAsync(id);
 
         if (booking is not null)
         {
@@ -62,7 +62,7 @@ public sealed class BookingRepository(
     public override async Task<Booking?> UpdateAsync(
         Booking entity)
     {
-        Booking? existing = await base.GetByIdAsync(entity.Id);
+        var existing = await base.GetByIdAsync(entity.Id);
 
         if (existing is null)
         {

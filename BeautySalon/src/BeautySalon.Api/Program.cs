@@ -4,7 +4,7 @@ using BeautySalon.Infrastructure.InMemory.DependencyInjection;
 using Microsoft.OpenApi;
 using System.Text.Json.Serialization;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -30,7 +30,7 @@ builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddBeautySalonApplication();
 builder.Services.AddBeautySalonInMemoryInfrastructure();
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseExceptionHandler();
@@ -45,3 +45,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
+
+/// <summary>Точка входа для интеграционных тестов.</summary>
+public partial class Program { }

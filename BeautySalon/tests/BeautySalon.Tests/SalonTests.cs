@@ -35,9 +35,9 @@ public sealed class SalonTests
     [Fact]
     public async Task GetExperiencedSpecialists_ReturnsExpectedSpecialists()
     {
-        IReadOnlyList<SpecialistDto> result = await _analyticsService.GetExperiencedSpecialistsAsync(5);
+        var result = await _analyticsService.GetExperiencedSpecialistsAsync(5);
 
-        Assert.Equal([0, 2, 3, 4, 6, 8, 9], result.Select(item => item.Id));
+        Assert.Equal([1, 3, 4, 5, 7, 9, 10], result.Select(item => item.Id));
     }
 
     /// <summary>
@@ -46,8 +46,8 @@ public sealed class SalonTests
     [Fact]
     public async Task GetSpecialistWindows_ReturnsExpectedTimeSlots()
     {
-        IReadOnlyList<TimeSlotDto>? result = await _analyticsService.GetSpecialistWindowsAsync(0);
-        IReadOnlyList<TimeSlotDto> windows = result ?? throw new InvalidOperationException("Для существующего специалиста должен возвращаться список окон.");
+        var result = await _analyticsService.GetSpecialistWindowsAsync(1);
+        var windows = result ?? throw new InvalidOperationException("Для существующего специалиста должен возвращаться список окон.");
         Assert.Equal(2, windows.Count);
         Assert.Equal(
             new DateTimeOffset(2026, 9, 1, 11, 0, 0, TimeSpan.Zero),
@@ -69,9 +69,9 @@ public sealed class SalonTests
     [Fact]
     public async Task GetTopServices_ReturnsExpectedOrder()
     {
-        IReadOnlyList<PopularServiceDto> result = await _analyticsService.GetTopServicesAsync(5);
+        var result = await _analyticsService.GetTopServicesAsync(5);
 
-        Assert.Equal([0, 1, 2, 3, 4], result.Select(item => item.BeautyServiceId));
+        Assert.Equal([1, 2, 3, 4, 5], result.Select(item => item.BeautyServiceId));
         Assert.Equal([2, 2, 1, 1, 1], result.Select(item => item.BookingCount));
     }
 
@@ -81,8 +81,8 @@ public sealed class SalonTests
     [Fact]
     public async Task GetRepeatBookingCount_ReturnsExpectedCount()
     {
-        DateTimeOffset from = new(2026, 9, 1, 10, 0, 0, TimeSpan.Zero);
-        DateTimeOffset to = new(2026, 9, 22, 10, 0, 0, TimeSpan.Zero);
+        var from = new DateTimeOffset(2026, 9, 1, 10, 0, 0, TimeSpan.Zero);
+        var to = new DateTimeOffset(2026, 9, 22, 10, 0, 0, TimeSpan.Zero);
 
         var result = await _analyticsService.GetRepeatBookingCountAsync(from, to);
 
@@ -95,8 +95,8 @@ public sealed class SalonTests
     [Fact]
     public async Task GetCustomersWithMultipleSpecialists_ReturnsExpectedCustomers()
     {
-        IReadOnlyList<CustomerDto> result = await _analyticsService.GetCustomersWithMultipleSpecialistsAsync();
+        var result = await _analyticsService.GetCustomersWithMultipleSpecialistsAsync();
 
-        Assert.Equal([1, 2], result.Select(item => item.Id));
+        Assert.Equal([2, 3], result.Select(item => item.Id));
     }
 }

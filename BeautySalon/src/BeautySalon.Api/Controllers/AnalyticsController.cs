@@ -24,7 +24,7 @@ public sealed class AnalyticsController(
     public async Task<ActionResult<IReadOnlyList<SpecialistDto>>> GetExperiencedSpecialistsAsync(
         [FromQuery, Range(0, 80)] int minimumExperienceYears = 5)
     {
-        IReadOnlyList<SpecialistDto> specialists = await analyticsService.GetExperiencedSpecialistsAsync(minimumExperienceYears);
+        var specialists = await analyticsService.GetExperiencedSpecialistsAsync(minimumExperienceYears);
 
         return Ok(specialists);
     }
@@ -37,15 +37,18 @@ public sealed class AnalyticsController(
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyList<TimeSlotDto>>> GetSpecialistWindowsAsync(
-        [FromRoute, Range(0, int.MaxValue)] int specialistId)
+        [FromRoute, Range(1, int.MaxValue)] int specialistId)
     {
-        IReadOnlyList<TimeSlotDto>? windows = await analyticsService.GetSpecialistWindowsAsync(specialistId);
+        var windows = await analyticsService.GetSpecialistWindowsAsync(specialistId);
 
         if (windows is null)
         {
-            logger.LogWarning(
-                "Специалист с ID {SpecialistId} не найден при запросе свободных окон.",
-                specialistId);
+            if (logger.IsEnabled(LogLevel.Warning))
+            {
+                logger.LogWarning(
+                    "Специалист с ID {SpecialistId} не найден при запросе свободных окон.",
+                    specialistId);
+            }
 
             return NotFound();
         }
@@ -62,7 +65,7 @@ public sealed class AnalyticsController(
     public async Task<ActionResult<IReadOnlyList<PopularServiceDto>>> GetTopServicesAsync(
         [FromQuery, Range(1, 100)] int count = 5)
     {
-        IReadOnlyList<PopularServiceDto> services = await analyticsService.GetTopServicesAsync(count);
+        var services = await analyticsService.GetTopServicesAsync(count);
 
         return Ok(services);
     }
@@ -79,7 +82,7 @@ public sealed class AnalyticsController(
     {
         if (from is null || to is null || from.Value >= to.Value)
         {
-            ValidationProblemDetails problem = new()
+            var problem = new ValidationProblemDetails()
             {
                 Status = StatusCodes.Status400BadRequest,
                 Title = "Некорректный период"
@@ -106,7 +109,7 @@ public sealed class AnalyticsController(
     [ProducesResponseType(typeof(IReadOnlyList<CustomerDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<CustomerDto>>> GetCustomersWithMultipleSpecialistsAsync()
     {
-        IReadOnlyList<CustomerDto> customers = await analyticsService.GetCustomersWithMultipleSpecialistsAsync();
+        var customers = await analyticsService.GetCustomersWithMultipleSpecialistsAsync();
 
         return Ok(customers);
     }
