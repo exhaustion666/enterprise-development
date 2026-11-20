@@ -1,10 +1,18 @@
 using BeautySalon.Api.Middleware;
+using BeautySalon.Api.Services;
 using BeautySalon.Application.DependencyInjection;
-using BeautySalon.Infrastructure.InMemory.DependencyInjection;
+using BeautySalon.Contracts.Interfaces;
+using BeautySalon.Infrastructure.PostgreSql;
+using BeautySalon.Infrastructure.PostgreSql.DependencyInjection;
+using BeautySalon.ServiceDefaults;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddServiceDefaults();
+builder.AddNpgsqlDbContext<BeautySalonDbContext>("beautysalon");
+builder.AddRabbitMQClient("messaging", settings => settings.DisableAutoActivation = false);
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -28,9 +36,33 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddBeautySalonApplication();
-builder.Services.AddBeautySalonInMemoryInfrastructure();
+builder.Services.AddBeautySalonPostgreSqlInfrastructure();
+builder.Services.AddSingleton<IEntityEventPublisher, RabbitMqEntityEventPublisher>();
 
 var app = builder.Build();
+
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<BeautySalonDbContext>();
+    await dbContext.Database.MigrateAsync();
+
+    await dbContext.Database.ExecuteSqlRawAsync("""
+        SELECT setval(pg_get_serial_sequence('"Customers"', 'Id'),
+            COALESCE((SELECT MAX("Id") FROM "Customers"), 0) + 1, false);
+        """);
+    await dbContext.Database.ExecuteSqlRawAsync("""
+        SELECT setval(pg_get_serial_sequence('"Specialists"', 'Id'),
+            COALESCE((SELECT MAX("Id") FROM "Specialists"), 0) + 1, false);
+        """);
+    await dbContext.Database.ExecuteSqlRawAsync("""
+        SELECT setval(pg_get_serial_sequence('"BeautyServices"', 'Id'),
+            COALESCE((SELECT MAX("Id") FROM "BeautyServices"), 0) + 1, false);
+        """);
+    await dbContext.Database.ExecuteSqlRawAsync("""
+        SELECT setval(pg_get_serial_sequence('"Bookings"', 'Id'),
+            COALESCE((SELECT MAX("Id") FROM "Bookings"), 0) + 1, false);
+        """);
+}
 
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseExceptionHandler();
@@ -43,8 +75,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapDefaultEndpoints();
 app.MapControllers();
 app.Run();
-
-/// <summary>Точка входа для интеграционных тестов.</summary>
-public partial class Program { }
