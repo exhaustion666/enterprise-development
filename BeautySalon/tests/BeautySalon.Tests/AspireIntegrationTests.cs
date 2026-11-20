@@ -75,7 +75,7 @@ public sealed class AspireIntegrationFixture : IAsyncLifetime
         await _application.ResourceNotifications.WaitForResourceHealthyAsync(
             "api", cancellationToken);
 
-        _httpClient = _application.CreateHttpClient("api");
+        _httpClient = _application.CreateHttpClient("api", "http");
 
         _connectionString = await _application.GetConnectionStringAsync(
                 "beautysalon",
