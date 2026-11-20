@@ -1,40 +1,51 @@
 # BeautySalon
 
-REST API салона красоты на **.NET 10 / ASP.NET Core**.
+REST API салона красоты на **.NET 10 / ASP.NET Core** с PostgreSQL, RabbitMQ и оркестрацией через .NET Aspire.
 
 ## Архитектура
 
 ```text
 BeautySalon.slnx
 ├── src/
-│   ├── BeautySalon.Domain/                    # Сущности, исключения, интерфейсы репозиториев
+│   ├── BeautySalon.Domain/                    # Сущности и интерфейсы репозиториев
 │   ├── BeautySalon.Contracts/                 # DTO и контракты сервисов
-│   ├── BeautySalon.Application/               # CRUD, маппинг, аналитика
-│   ├── BeautySalon.Infrastructure.InMemory/  # InMemory-репозитории и начальные данные
-│   └── BeautySalon.Api/                       # Контроллеры, DI, обработка ошибок, Swagger
+│   ├── BeautySalon.Application/               # CRUD-сервисы и аналитика
+│   ├── BeautySalon.Infrastructure.PostgreSql/ # EF Core, PostgreSQL, репозитории, миграции и начальные данные
+│   ├── BeautySalon.Infrastructure.InMemory/   # InMemory-репозитории и начальные данные
+│   ├── BeautySalon.Api/                       # REST-контроллеры, Swagger, обработка ошибок и RabbitMQ
+│   ├── BeautySalon.AppHost/                   # Оркестрация PostgreSQL, RabbitMQ и API через Aspire
+│   └── BeautySalon.ServiceDefaults/           # Общие настройки сервисов и health checks
 └── tests/
-    └── BeautySalon.Tests/                     # xUnit: аналитические тесты
+    └── BeautySalon.Tests/                     # Unit- и интеграционные тесты
 ```
 
-`Domain` содержит сущности `Customer`, `Specialist`, `BeautyService`, `Booking` и контракт `IRepository<TEntity>`. `Infrastructure.InMemory` реализует репозитории на основе `Dictionary<int, TEntity>`. API связывает компоненты через DI.
+`Domain` содержит сущности `Customer`, `Specialist`, `BeautyService`, `Booking` и интерфейсы репозиториев. `Application` реализует прикладную логику, `Infrastructure.PostgreSql` — хранение данных через Entity Framework Core, `Infrastructure.InMemory` предоставляет дополнительную реализацию CRUD и аналитических репозиториев с хранением данных в памяти, а `Api` предоставляет HTTP-интерфейс.
 
-Swagger UI доступен по адресу `https://localhost:7240/swagger` или `http://localhost:5279/swagger` (порты заданы в `launchSettings.json`).
+Строка подключения к PostgreSQL и параметры RabbitMQ передаются в API из Aspire. Миграции и начальные данные применяются при запуске приложения.
 
 ## REST API
 
-Базовый адрес — `/api`. Все CRUD-операции работают через типизированные DTO. Идентификаторы назначаются репозиторием автоматически.
+Базовый префикс маршрутов — `/api`. Идентификаторы создаются базой данных.
 
-| Ресурс | Маршрут | Операции |
-|---|---|---|
-| Клиенты | `/api/customers` | GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}` |
-| Специалисты | `/api/specialists` | GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}` |
-| Услуги | `/api/beauty-services` | GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}` |
-| Записи | `/api/bookings` | GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}` |
+|Ресурс|Маршрут|Операции|
+|-|-|-|
+|Клиенты|`/api/customers`|GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}`|
+|Специалисты|`/api/specialists`|GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}`|
+|Услуги|`/api/beauty-services`|GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}`|
+|Записи|`/api/bookings`|GET, GET `/{id}`, POST, PUT `/{id}`, DELETE `/{id}`|
+|Аналитика|`/api/analytics/...`|Аналитические запросы|
 
-Успешное создание возвращает `201 Created` и заголовок `Location`. Успешное изменение и удаление возвращают `204 No Content`. Для отсутствующего объекта возвращается `404 Not Found`. Отрицательные ID проверяются атрибутами `[Range]` и автоматически дают `400 Bad Request` благодаря `[ApiController]`.
+Создание возвращает `201 Created`, изменение и успешное удаление — `204 No Content`. Для отсутствующей сущности возвращается `404 Not Found`, для конфликтов уникальности и ограничений связей — `409 Conflict`, для некорректных входных данных — `400 Bad Request`.
 
-Входные DTO проверяются через атрибуты `Required`, `Range`, `StringLength`, `Phone` и `EnumDataType`.
+
+## PostgreSQL и RabbitMQ
+
+Entity Framework Core работает с PostgreSQL через `AddNpgsqlDbContext` и конфигурацию, переданную Aspire. Миграции применяются автоматически при запуске API; начальные данные задаются через `HasData`.
+
+При изменении сущностей приложение публикует события в RabbitMQ. Параметры подключения к брокеру также передаются через Aspire.
 
 ## Обработка ошибок и логирование
 
-Ожидаемые ошибки преобразуются в `ProblemDetails`: `400` — некорректный запрос, `404` — сущность не найдена, `409` — конфликт связей. Неожиданные ошибки возвращают `500` без раскрытия внутренних подробностей. `RequestLoggingMiddleware` записывает HTTP-метод, путь, код ответа и время обработки.
+`ApiExceptionHandler` преобразует ошибки приложения и PostgreSQL в ответы `ProblemDetails`.
+
+`RequestLoggingMiddleware` записывает HTTP-метод, путь, код ответа и время обработки запроса.
