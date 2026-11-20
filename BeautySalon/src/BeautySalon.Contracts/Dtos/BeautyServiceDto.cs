@@ -8,25 +8,25 @@ public sealed class BeautyServiceDto : IEntityDto
     /// <summary>
     /// Уникальный идентификатор
     /// </summary>
-    public required int Id { get; init; }
+    public required int Id { get; set; }
 
     /// <summary>
     /// Наименование
     /// </summary>
-    public required string Name { get; init; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// Категория
     /// </summary>
-    public required string Category { get; init; }
+    public required string Category { get; set; }
 
     /// <summary>
     /// Цена
     /// </summary>
-    public required decimal Price { get; init; }
+    public required decimal Price { get; set; }
 
     /// <summary>
     /// Длительность
     /// </summary>
-    public required TimeSpan Duration { get; init; }
+    public required TimeSpan Duration { get; set; }
 }

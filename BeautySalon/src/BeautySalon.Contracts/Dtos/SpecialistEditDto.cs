@@ -13,33 +13,33 @@ public sealed class SpecialistEditDto
     /// </summary>
     [Required]
     [StringLength(80, MinimumLength = 1)]
-    public string? LastName { get; init; }
+    public string? LastName { get; set; }
 
     /// <summary>
     /// Имя
     /// </summary>
     [Required]
     [StringLength(80, MinimumLength = 1)]
-    public string? FirstName { get; init; }
+    public string? FirstName { get; set; }
 
     /// <summary>
     /// Отчество
     /// </summary>
     [StringLength(80)]
-    public string? Patronymic { get; init; }
+    public string? Patronymic { get; set; }
 
     /// <summary>
     /// Дата рождения
     /// </summary>
     [Required]
-    public DateOnly? DateOfBirth { get; init; }
+    public DateOnly? DateOfBirth { get; set; }
 
     /// <summary>
     /// Пол
     /// </summary>
     [Required]
     [EnumDataType(typeof(Gender))]
-    public Gender? Gender { get; init; }
+    public Gender? Gender { get; set; }
 
     /// <summary>
     /// Телефон
@@ -47,25 +47,26 @@ public sealed class SpecialistEditDto
     [Required]
     [Phone]
     [StringLength(32)]
-    public string? Phone { get; init; }
+    public string? Phone { get; set; }
 
     /// <summary>
     /// Номер паспорта
     /// </summary>
+    [Required(ErrorMessage = "Номер паспорта обязателен")]
     [RegularExpression(@"^\d{10}$", ErrorMessage = "Номер паспорта должен содержать 10 цифр")]
-    public string? PassportNumber { get; init; }
+    public string? PassportNumber { get; set; }
 
     /// <summary>
     /// Специализация
     /// </summary>
     [Required]
     [StringLength(100, MinimumLength = 1)]
-    public string? Specialization { get; init; }
+    public string? Specialization { get; set; }
 
     /// <summary>
     /// Стаж работы
     /// </summary>
     [Required]
     [Range(0, 80)]
-    public int? ExperienceYears { get; init; }
+    public int? ExperienceYears { get; set; }
 }

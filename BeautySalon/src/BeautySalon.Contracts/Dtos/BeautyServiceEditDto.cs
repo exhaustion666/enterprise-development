@@ -12,26 +12,26 @@ public sealed class BeautyServiceEditDto
     /// </summary>
     [Required]
     [StringLength(120, MinimumLength = 1)]
-    public string? Name { get; init; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// Категория
     /// </summary>
     [Required]
     [StringLength(80, MinimumLength = 1)]
-    public string? Category { get; init; }
+    public string? Category { get; set; }
 
     /// <summary>
     /// Цена
     /// </summary>
     [Required]
     [Range(typeof(decimal), "1", "1000000")]
-    public decimal? Price { get; init; }
+    public decimal? Price { get; set; }
 
     /// <summary>
     /// Длительность
     /// </summary>
     [Required]
     [Range(1, 1440)]
-    public int? DurationMinutes { get; init; }
+    public int? DurationMinutes { get; set; }
 }

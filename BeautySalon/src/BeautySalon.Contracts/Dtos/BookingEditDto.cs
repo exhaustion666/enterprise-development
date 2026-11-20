@@ -11,32 +11,32 @@ public sealed class BookingEditDto
     /// Начало выполнения
     /// </summary>
     [Required]
-    public DateTimeOffset? StartAt { get; init; }
+    public DateTimeOffset? StartAt { get; set; }
 
     /// <summary>
     /// Уникальный идентификатор мастера
     /// </summary>
     [Required]
     [Range(1, int.MaxValue)]
-    public int? SpecialistId { get; init; }
+    public int? SpecialistId { get; set; }
 
     /// <summary>
     /// Уникальный идентификатор клиента
     /// </summary>
     [Required]
     [Range(1, int.MaxValue)]
-    public int? CustomerId { get; init; }
+    public int? CustomerId { get; set; }
 
     /// <summary>
     /// Уникальный идентификатор услуги
     /// </summary>
     [Required]
     [Range(1, int.MaxValue)]
-    public int? BeautyServiceId { get; init; }
+    public int? BeautyServiceId { get; set; }
 
     /// <summary>
     /// Флаг постоянного клиента
     /// </summary>
     [Required]
-    public bool? IsRegularCustomer { get; init; }
+    public bool? IsRegularCustomer { get; set; }
 }

@@ -13,33 +13,33 @@ public sealed class CustomerEditDto
     /// </summary>
     [Required]
     [StringLength(80, MinimumLength = 1)]
-    public string? LastName { get; init; }
+    public string? LastName { get; set; }
 
     /// <summary>
     /// Имя
     /// </summary>
     [Required]
     [StringLength(80, MinimumLength = 1)]
-    public string? FirstName { get; init; }
+    public string? FirstName { get; set; }
 
     /// <summary>
     /// Отчество
     /// </summary>
     [StringLength(80)]
-    public string? Patronymic { get; init; }
+    public string? Patronymic { get; set; }
 
     /// <summary>
     /// Дата рождения
     /// </summary>
     [Required]
-    public DateOnly? DateOfBirth { get; init; }
+    public DateOnly? DateOfBirth { get; set; }
 
     /// <summary>
     /// Пол
     /// </summary>
     [Required]
     [EnumDataType(typeof(Gender))]
-    public Gender? Gender { get; init; }
+    public Gender? Gender { get; set; }
 
     /// <summary>
     /// Телефон
@@ -47,5 +47,5 @@ public sealed class CustomerEditDto
     [Required]
     [Phone]
     [StringLength(32)]
-    public string? Phone { get; init; }
+    public string? Phone { get; set; }
 }
