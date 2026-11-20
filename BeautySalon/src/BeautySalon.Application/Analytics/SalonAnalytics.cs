@@ -80,15 +80,23 @@ public static class SalonAnalytics
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
         return [.. bookings
-            .GroupBy(booking => booking.BeautyServiceId)
-            .Select(group => new PopularService
+        .GroupBy(booking => booking.BeautyServiceId)
+        .Select(static group =>
+        {
+            var beautyService = group.First().BeautyService
+                ?? throw new InvalidOperationException(
+                    $"Не найдена услуга с ID {group.Key}.");
+
+            return new PopularService
             {
                 BeautyServiceId = group.Key,
+                Name = beautyService.Name,
                 BookingCount = group.Count()
-            })
-            .OrderByDescending(service => service.BookingCount)
-            .ThenBy(service => service.BeautyServiceId)
-            .Take(count)];
+            };
+        })
+        .OrderByDescending(service => service.BookingCount)
+        .ThenBy(service => service.BeautyServiceId)
+        .Take(count)];
     }
 
     /// <summary>

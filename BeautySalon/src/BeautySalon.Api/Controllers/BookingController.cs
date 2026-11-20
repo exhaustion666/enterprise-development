@@ -18,9 +18,9 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<BookingDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetAllAsync()
+    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return Ok(await service.GetAllAsync());
+        return Ok(await service.GetAllAsync(cancellationToken));
     }
 
     /// <summary>
@@ -31,9 +31,10 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BookingDto>> GetByIdAsync(
-        [FromRoute, Range(1, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id,
+        CancellationToken cancellationToken)
     {
-        var booking = await service.GetByIdAsync(id);
+        var booking = await service.GetByIdAsync(id, cancellationToken);
         return booking is null ? (ActionResult<BookingDto>)NotFound() : (ActionResult<BookingDto>)Ok(booking);
     }
 
@@ -43,10 +44,12 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     [HttpPost]
     [ProducesResponseType(typeof(BookingDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BookingDto>> CreateAsync(
-        [FromBody] BookingEditDto request)
+        [FromBody] BookingEditDto request,
+        CancellationToken cancellationToken)
     {
-        var created = await service.CreateAsync(request);
+        var created = await service.CreateAsync(request, cancellationToken);
         if (logger.IsEnabled(LogLevel.Information))
         {
             logger.LogInformation(
@@ -63,11 +66,13 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> UpdateAsync(
         [FromRoute, Range(1, int.MaxValue)] int id,
-        [FromBody] BookingEditDto request)
+        [FromBody] BookingEditDto request,
+        CancellationToken cancellationToken)
     {
-        var updated = await service.UpdateAsync(id, request);
+        var updated = await service.UpdateAsync(id, request, cancellationToken);
 
         if (updated is null)
         {
@@ -90,10 +95,12 @@ public sealed class BookingController(ICrudService<BookingDto, BookingEditDto> s
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> DeleteAsync(
-        [FromRoute, Range(1, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id,
+        CancellationToken cancellationToken)
     {
-        var deleted = await service.DeleteAsync(id);
+        var deleted = await service.DeleteAsync(id, cancellationToken);
 
         if (!deleted)
         {

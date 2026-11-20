@@ -22,9 +22,10 @@ public sealed class AnalyticsController(
     [ProducesResponseType(typeof(IReadOnlyList<SpecialistDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<SpecialistDto>>> GetExperiencedSpecialistsAsync(
-        [FromQuery, Range(0, 80)] int minimumExperienceYears = 5)
+        [FromQuery, Range(0, 80)] int minimumExperienceYears = 5,
+        CancellationToken cancellationToken = default)
     {
-        var specialists = await analyticsService.GetExperiencedSpecialistsAsync(minimumExperienceYears);
+        var specialists = await analyticsService.GetExperiencedSpecialistsAsync(minimumExperienceYears, cancellationToken);
 
         return Ok(specialists);
     }
@@ -37,9 +38,10 @@ public sealed class AnalyticsController(
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyList<TimeSlotDto>>> GetSpecialistWindowsAsync(
-        [FromRoute, Range(1, int.MaxValue)] int specialistId)
+        [FromRoute, Range(1, int.MaxValue)] int specialistId,
+        CancellationToken cancellationToken)
     {
-        var windows = await analyticsService.GetSpecialistWindowsAsync(specialistId);
+        var windows = await analyticsService.GetSpecialistWindowsAsync(specialistId, cancellationToken);
 
         if (windows is null)
         {
@@ -63,9 +65,10 @@ public sealed class AnalyticsController(
     [ProducesResponseType(typeof(IReadOnlyList<PopularServiceDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<PopularServiceDto>>> GetTopServicesAsync(
-        [FromQuery, Range(1, 100)] int count = 5)
+        [FromQuery, Range(1, 100)] int count = 5,
+        CancellationToken cancellationToken = default)
     {
-        var services = await analyticsService.GetTopServicesAsync(count);
+        var services = await analyticsService.GetTopServicesAsync(count, cancellationToken);
 
         return Ok(services);
     }
@@ -78,7 +81,8 @@ public sealed class AnalyticsController(
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> GetRepeatBookingCountAsync(
         [FromQuery, Required] DateTimeOffset? from,
-        [FromQuery, Required] DateTimeOffset? to)
+        [FromQuery, Required] DateTimeOffset? to,
+        CancellationToken cancellationToken)
     {
         if (from is null || to is null || from.Value >= to.Value)
         {
@@ -97,7 +101,8 @@ public sealed class AnalyticsController(
 
         var result = await analyticsService.GetRepeatBookingCountAsync(
             from.Value,
-            to.Value);
+            to.Value,
+            cancellationToken);
 
         return Ok(result);
     }
@@ -107,9 +112,9 @@ public sealed class AnalyticsController(
     /// </summary>
     [HttpGet("customers-with-multiple-specialists")]
     [ProducesResponseType(typeof(IReadOnlyList<CustomerDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<CustomerDto>>> GetCustomersWithMultipleSpecialistsAsync()
+    public async Task<ActionResult<IReadOnlyList<CustomerDto>>> GetCustomersWithMultipleSpecialistsAsync(CancellationToken cancellationToken)
     {
-        var customers = await analyticsService.GetCustomersWithMultipleSpecialistsAsync();
+        var customers = await analyticsService.GetCustomersWithMultipleSpecialistsAsync(cancellationToken);
 
         return Ok(customers);
     }

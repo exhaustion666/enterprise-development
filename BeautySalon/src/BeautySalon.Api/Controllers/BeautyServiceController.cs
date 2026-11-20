@@ -18,9 +18,9 @@ public sealed class BeautyServiceController(ICrudService<BeautyServiceDto, Beaut
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<BeautyServiceDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<BeautyServiceDto>>> GetAllAsync()
+    public async Task<ActionResult<IReadOnlyList<BeautyServiceDto>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return Ok(await service.GetAllAsync());
+        return Ok(await service.GetAllAsync(cancellationToken));
     }
 
     /// <summary>
@@ -31,9 +31,10 @@ public sealed class BeautyServiceController(ICrudService<BeautyServiceDto, Beaut
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BeautyServiceDto>> GetByIdAsync(
-        [FromRoute, Range(1, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id,
+        CancellationToken cancellationToken)
     {
-        var beautyService = await service.GetByIdAsync(id);
+        var beautyService = await service.GetByIdAsync(id, cancellationToken);
         return beautyService is null ? (ActionResult<BeautyServiceDto>)NotFound() : (ActionResult<BeautyServiceDto>)Ok(beautyService);
     }
 
@@ -43,10 +44,12 @@ public sealed class BeautyServiceController(ICrudService<BeautyServiceDto, Beaut
     [HttpPost]
     [ProducesResponseType(typeof(BeautyServiceDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BeautyServiceDto>> CreateAsync(
-        [FromBody] BeautyServiceEditDto request)
+        [FromBody] BeautyServiceEditDto request,
+        CancellationToken cancellationToken)
     {
-        var created = await service.CreateAsync(request);
+        var created = await service.CreateAsync(request, cancellationToken);
         if (logger.IsEnabled(LogLevel.Information))
         {
             logger.LogInformation(
@@ -63,11 +66,13 @@ public sealed class BeautyServiceController(ICrudService<BeautyServiceDto, Beaut
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> UpdateAsync(
         [FromRoute, Range(1, int.MaxValue)] int id,
-        [FromBody] BeautyServiceEditDto request)
+        [FromBody] BeautyServiceEditDto request,
+        CancellationToken cancellationToken)
     {
-        var updated = await service.UpdateAsync(id, request);
+        var updated = await service.UpdateAsync(id, request, cancellationToken);
 
         if (updated is null)
         {
@@ -92,9 +97,10 @@ public sealed class BeautyServiceController(ICrudService<BeautyServiceDto, Beaut
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> DeleteAsync(
-        [FromRoute, Range(1, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id,
+        CancellationToken cancellationToken)
     {
-        var deleted = await service.DeleteAsync(id);
+        var deleted = await service.DeleteAsync(id, cancellationToken);
 
         if (!deleted)
         {

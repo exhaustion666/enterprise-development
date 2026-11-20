@@ -18,9 +18,9 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<SpecialistDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<SpecialistDto>>> GetAllAsync()
+    public async Task<ActionResult<IReadOnlyList<SpecialistDto>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return Ok(await service.GetAllAsync());
+        return Ok(await service.GetAllAsync(cancellationToken));
     }
 
     /// <summary>
@@ -31,9 +31,10 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SpecialistDto>> GetByIdAsync(
-        [FromRoute, Range(1, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id,
+        CancellationToken cancellationToken)
     {
-        var specialist = await service.GetByIdAsync(id);
+        var specialist = await service.GetByIdAsync(id, cancellationToken);
         return specialist is null ? (ActionResult<SpecialistDto>)NotFound() : (ActionResult<SpecialistDto>)Ok(specialist);
     }
 
@@ -43,10 +44,12 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     [HttpPost]
     [ProducesResponseType(typeof(SpecialistDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<SpecialistDto>> CreateAsync(
-        [FromBody] SpecialistEditDto request)
+        [FromBody] SpecialistEditDto request,
+        CancellationToken cancellationToken)
     {
-        var created = await service.CreateAsync(request);
+        var created = await service.CreateAsync(request, cancellationToken);
         if (logger.IsEnabled(LogLevel.Information))
         {
             logger.LogInformation(
@@ -63,11 +66,13 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> UpdateAsync(
         [FromRoute, Range(1, int.MaxValue)] int id,
-        [FromBody] SpecialistEditDto request)
+        [FromBody] SpecialistEditDto request,
+        CancellationToken cancellationToken)
     {
-        var updated = await service.UpdateAsync(id, request);
+        var updated = await service.UpdateAsync(id, request, cancellationToken);
 
         if (updated is null)
         {
@@ -92,9 +97,10 @@ public sealed class SpecialistController(ICrudService<SpecialistDto, SpecialistE
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> DeleteAsync(
-        [FromRoute, Range(1, int.MaxValue)] int id)
+        [FromRoute, Range(1, int.MaxValue)] int id,
+        CancellationToken cancellationToken)
     {
-        var deleted = await service.DeleteAsync(id);
+        var deleted = await service.DeleteAsync(id, cancellationToken);
 
         if (!deleted)
         {

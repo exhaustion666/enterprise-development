@@ -13,6 +13,7 @@ public interface IEntityMapper<TEntity, TDto, in TEditDto>
     /// Создаёт DTO для чтения
     /// </summary>
     public TDto ToDto(TEntity entity);
+
     /// <summary>
     /// Создаёт сущность из DTO
     /// </summary>

@@ -11,6 +11,11 @@ public class PopularService
     public required int BeautyServiceId { get; set; }
 
     /// <summary>
+    /// Наименование услуги
+    /// </summary>
+    public required string Name { get; set; }
+
+    /// <summary>
     /// Количество записей на услугу
     /// </summary>
     public required int BookingCount { get; set; }

@@ -10,64 +10,75 @@ namespace BeautySalon.Application.Services;
 /// </summary>
 public sealed class CrudService<TEntity, TDto, TEditDto>(
     IRepository<TEntity, int> repository,
-    IEntityMapper<TEntity, TDto, TEditDto> mapper) : ICrudService<TDto, TEditDto>
-    where TEntity : class
+    IEntityMapper<TEntity, TDto, TEditDto> mapper,
+    IEntityEventPublisher eventPublisher) : ICrudService<TDto, TEditDto>
+    where TEntity : class, IEntity
     where TDto : class, IEntityDto
 {
     /// <summary>
     /// Возвращает DTO всех сущностей
     /// </summary>
-    public async Task<IReadOnlyList<TDto>> GetAllAsync()
+    public async Task<IReadOnlyList<TDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var entities = await repository.GetAllAsync();
+        var entities = await repository.GetAllAsync(cancellationToken);
         return [.. entities.Select(mapper.ToDto)];
     }
 
     /// <summary>
     /// Возвращает DTO сущности
     /// </summary>
-    public async Task<TDto?> GetByIdAsync(int id)
+    public async Task<TDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-        var entity = await repository.GetByIdAsync(id);
+        var entity = await repository.GetByIdAsync(id, cancellationToken);
         return entity is null ? null : mapper.ToDto(entity);
     }
 
     /// <summary>
     /// Создаёт сущность через репозиторий
     /// </summary>
-    public async Task<TDto> CreateAsync(TEditDto dto)
+    public async Task<TDto> CreateAsync(TEditDto dto, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(dto);
-        var entity = mapper.ToEntity(dto, 1);
-        var created = await repository.AddAsync(entity);
+        var entity = mapper.ToEntity(dto, 0);
+        var created = await repository.AddAsync(entity, cancellationToken);
+        await eventPublisher.PublishAsync(typeof(TEntity).Name, created.Id, "created", cancellationToken);
         return mapper.ToDto(created);
     }
 
     /// <summary>
     /// Обновляет сущность
     /// </summary>
-    public async Task<TDto?> UpdateAsync(int id, TEditDto dto)
+    public async Task<TDto?> UpdateAsync(
+        int id, TEditDto dto, CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
         ArgumentNullException.ThrowIfNull(dto);
-        var existing = await repository.GetByIdAsync(id);
-        if (existing is null)
+        var entity = mapper.ToEntity(dto, id);
+        var updated = await repository.UpdateAsync(entity, cancellationToken);
+
+        if (updated is null)
         {
             return null;
         }
 
-        var entity = mapper.ToEntity(dto, id);
-        var updated = await repository.UpdateAsync(entity);
-        return updated is null ? null : mapper.ToDto(updated);
+        await eventPublisher.PublishAsync(typeof(TEntity).Name, updated.Id, "updated", cancellationToken);
+        return mapper.ToDto(updated);
     }
 
     /// <summary>
     /// Удаляет сущность
     /// </summary>
-    public Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-        return repository.DeleteAsync(id);
+        var deleted = await repository.DeleteAsync(id, cancellationToken);
+
+        if (deleted)
+        {
+            await eventPublisher.PublishAsync(typeof(TEntity).Name, id, "deleted", cancellationToken);
+        }
+
+        return deleted;
     }
 }
