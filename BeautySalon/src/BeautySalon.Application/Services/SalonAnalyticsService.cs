@@ -1,10 +1,8 @@
-using BeautySalon.Application.Analytics;
 using BeautySalon.Application.Mappers;
 using BeautySalon.Contracts.Dtos;
 using BeautySalon.Contracts.Interfaces;
 using BeautySalon.Domain.Entities;
 using BeautySalon.Domain.Interfaces;
-using BeautySalon.Domain.Models;
 
 namespace BeautySalon.Application.Services;
 
@@ -12,10 +10,7 @@ namespace BeautySalon.Application.Services;
 /// Класс аналитики по записям салона
 /// </summary>
 public sealed class SalonAnalyticsService(
-    IRepository<Specialist, int> specialistRepository,
-    IRepository<Customer, int> customerRepository,
-    IRepository<Booking, int> bookingRepository,
-    IRepository<BeautyService, int> beautyServiceRepository,
+    IAnalyticsRepository analyticsRepository,
     IEntityMapper<Specialist, SpecialistDto, SpecialistEditDto> specialistMapper,
     IEntityMapper<Customer, CustomerDto, CustomerEditDto> customerMapper)
     : ISalonAnalyticsService
@@ -24,98 +19,70 @@ public sealed class SalonAnalyticsService(
     /// Мастера с заданным минимальным стажем
     /// </summary>
     public async Task<IReadOnlyList<SpecialistDto>> GetExperiencedSpecialistsAsync(
-        int minimumExperienceYears)
+        int minimumExperienceYears, CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(minimumExperienceYears);
-
-        var specialists = await specialistRepository.GetAllAsync();
-
-        return [.. SalonAnalytics.GetExperiencedSpecialists(
-            specialists,
-            minimumExperienceYears).Select(specialistMapper.ToDto)];
+        var specialists = await analyticsRepository.GetExperiencedSpecialistsAsync(
+            minimumExperienceYears, cancellationToken);
+        return [.. specialists.Select(specialistMapper.ToDto)];
     }
 
     /// <summary>
     /// Свободные "окошки" у мастера
     /// </summary>
     public async Task<IReadOnlyList<TimeSlotDto>?> GetSpecialistWindowsAsync(
-        int specialistId)
+        int specialistId, CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(specialistId);
+        var windows = await analyticsRepository.GetSpecialistWindowsAsync(specialistId, cancellationToken);
 
-        var specialist = await specialistRepository.GetByIdAsync(
-            specialistId);
-
-        if (specialist is null)
-        {
-            return null;
-        }
-
-        var bookings = await bookingRepository.GetAllAsync();
-
-        var windows = SalonAnalytics.GetSpecialistWindows(
-            bookings,
-            specialistId);
-
-        return [.. windows.Select(window => new TimeSlotDto
-        {
-            StartAt = window.StartAt,
-            EndAt = window.EndAt,
-            Duration = window.Duration
-        })];
+        return windows is null
+            ? null
+            : [.. windows.Select(window => new TimeSlotDto
+            {
+                StartAt = window.StartAt,
+                EndAt = window.EndAt,
+                Duration = window.Duration
+            })];
     }
 
     /// <summary>
     /// Самые популярные услуги
     /// </summary>
     public async Task<IReadOnlyList<PopularServiceDto>> GetTopServicesAsync(
-        int count)
+        int count, CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
-
-        var bookings = await bookingRepository.GetAllAsync();
-        var services = await beautyServiceRepository.GetAllAsync();
-
-        var servicesById = services.ToDictionary(service => service.Id);
-
-        return [.. SalonAnalytics.GetTopServices(bookings, count)
-            .Where(popular => servicesById.ContainsKey(popular.BeautyServiceId))
-            .Select(popular => new PopularServiceDto
-            {
-                BeautyServiceId = popular.BeautyServiceId,
-                Name = servicesById[popular.BeautyServiceId].Name,
-                BookingCount = popular.BookingCount
-            })];
+        var services = await analyticsRepository.GetTopServicesAsync(count, cancellationToken);
+        return [.. services.Select(service => new PopularServiceDto
+        {
+            BeautyServiceId = service.BeautyServiceId,
+            Name = service.Name,
+            BookingCount = service.BookingCount
+        })];
     }
 
     /// <summary>
     /// Количество повторных записей клиентов за указанный период
     /// </summary>
-    public async Task<int> GetRepeatBookingCountAsync(
-        DateTimeOffset from,
-        DateTimeOffset to)
+    public Task<int> GetRepeatBookingCountAsync(
+        DateTimeOffset from, DateTimeOffset to, CancellationToken cancellationToken = default)
     {
         if (from >= to)
         {
-            throw new ArgumentException(
-                "Начало периода должно быть раньше его окончания.");
+            throw new ArgumentException("Начало периода должно быть раньше его окончания.");
         }
 
-        var bookings = await bookingRepository.GetAllAsync();
-
-        return SalonAnalytics.GetRepeatBookingCount(bookings, from, to);
+        return analyticsRepository.GetRepeatBookingCountAsync(from, to, cancellationToken);
     }
 
     /// <summary>
     /// Клиенты записанные к нескольким мастерам упорядоченные по дате рождения
     /// </summary>
-    public async Task<IReadOnlyList<CustomerDto>> GetCustomersWithMultipleSpecialistsAsync()
+    public async Task<IReadOnlyList<CustomerDto>> GetCustomersWithMultipleSpecialistsAsync(
+        CancellationToken cancellationToken = default)
     {
-        var customers = await customerRepository.GetAllAsync();
-        var bookings = await bookingRepository.GetAllAsync();
-
-        return [.. SalonAnalytics.GetCustomersWithMultipleSpecialists(
-            customers,
-            bookings).Select(customerMapper.ToDto)];
+        var customers = await analyticsRepository.GetCustomersWithMultipleSpecialistsAsync(cancellationToken);
+        return [.. customers.Select(customerMapper.ToDto)];
     }
 }
