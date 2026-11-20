@@ -74,7 +74,6 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "BeautySalon API v1"));
 }
 
-app.UseHttpsRedirection();
 app.MapDefaultEndpoints();
 app.MapControllers();
 app.Run();
