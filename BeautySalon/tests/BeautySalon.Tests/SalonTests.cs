@@ -1,7 +1,8 @@
 using BeautySalon.Application.Mappers;
 using BeautySalon.Application.Services;
-using BeautySalon.Contracts.Dtos;
-using BeautySalon.Infrastructure.InMemory;
+using BeautySalon.Infrastructure.PostgreSql;
+using BeautySalon.Infrastructure.PostgreSql.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace BeautySalon.Tests;
@@ -9,8 +10,9 @@ namespace BeautySalon.Tests;
 /// <summary>
 /// Класс проверки аналитического сервиса
 /// </summary>
-public sealed class SalonTests
+public sealed class SalonTests : IDisposable
 {
+    private readonly BeautySalonDbContext _context;
     private readonly SalonAnalyticsService _analyticsService;
 
     /// <summary>
@@ -18,15 +20,25 @@ public sealed class SalonTests
     /// </summary>
     public SalonTests()
     {
-        var storage = new InMemoryStorage();
+        var options = new DbContextOptionsBuilder<BeautySalonDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        _context = new BeautySalonDbContext(options);
+        _context.Database.EnsureCreated();
         _analyticsService = new SalonAnalyticsService(
-            storage.Specialists,
-            storage.Customers,
-            storage.Bookings,
-            storage.BeautyServices,
+            new AnalyticsRepository(_context),
             new SpecialistMapper(),
             new CustomerMapper()
         );
+    }
+
+    /// <summary>
+    /// Освобождает независимое хранилище
+    /// </summary>
+    public void Dispose()
+    {
+        _context.Dispose();
     }
 
     /// <summary>
@@ -35,7 +47,7 @@ public sealed class SalonTests
     [Fact]
     public async Task GetExperiencedSpecialists_ReturnsExpectedSpecialists()
     {
-        var result = await _analyticsService.GetExperiencedSpecialistsAsync(5);
+        var result = await _analyticsService.GetExperiencedSpecialistsAsync(5, TestContext.Current.CancellationToken);
 
         Assert.Equal([1, 3, 4, 5, 7, 9, 10], result.Select(item => item.Id));
     }
@@ -46,7 +58,7 @@ public sealed class SalonTests
     [Fact]
     public async Task GetSpecialistWindows_ReturnsExpectedTimeSlots()
     {
-        var result = await _analyticsService.GetSpecialistWindowsAsync(1);
+        var result = await _analyticsService.GetSpecialistWindowsAsync(1, TestContext.Current.CancellationToken);
         var windows = result ?? throw new InvalidOperationException("Для существующего специалиста должен возвращаться список окон.");
         Assert.Equal(2, windows.Count);
         Assert.Equal(
@@ -69,7 +81,7 @@ public sealed class SalonTests
     [Fact]
     public async Task GetTopServices_ReturnsExpectedOrder()
     {
-        var result = await _analyticsService.GetTopServicesAsync(5);
+        var result = await _analyticsService.GetTopServicesAsync(5, TestContext.Current.CancellationToken);
 
         Assert.Equal([1, 2, 3, 4, 5], result.Select(item => item.BeautyServiceId));
         Assert.Equal([2, 2, 1, 1, 1], result.Select(item => item.BookingCount));
@@ -84,7 +96,7 @@ public sealed class SalonTests
         var from = new DateTimeOffset(2026, 9, 1, 10, 0, 0, TimeSpan.Zero);
         var to = new DateTimeOffset(2026, 9, 22, 10, 0, 0, TimeSpan.Zero);
 
-        var result = await _analyticsService.GetRepeatBookingCountAsync(from, to);
+        var result = await _analyticsService.GetRepeatBookingCountAsync(from, to, TestContext.Current.CancellationToken);
 
         Assert.Equal(3, result);
     }
@@ -95,7 +107,7 @@ public sealed class SalonTests
     [Fact]
     public async Task GetCustomersWithMultipleSpecialists_ReturnsExpectedCustomers()
     {
-        var result = await _analyticsService.GetCustomersWithMultipleSpecialistsAsync();
+        var result = await _analyticsService.GetCustomersWithMultipleSpecialistsAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal([2, 3], result.Select(item => item.Id));
     }

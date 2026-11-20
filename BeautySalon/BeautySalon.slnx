@@ -2,7 +2,12 @@
   <Project Path="src/BeautySalon.Domain/BeautySalon.Domain.csproj" />
   <Project Path="src/BeautySalon.Contracts/BeautySalon.Contracts.csproj" />
   <Project Path="src/BeautySalon.Application/BeautySalon.Application.csproj" />
-  <Project Path="src/BeautySalon.Infrastructure.InMemory/BeautySalon.Infrastructure.InMemory.csproj" />
+  <Project Path="src/BeautySalon.Infrastructure.PostgreSql/BeautySalon.Infrastructure.PostgreSql.csproj" />
+  <Project Path="src/BeautySalon.ServiceDefaults/BeautySalon.ServiceDefaults.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/BeautySalon.Infrastructure.InMemory/BeautySalon.Infrastructure.InMemory.csproj" />
+  </Folder>
   <Project Path="src/BeautySalon.Api/BeautySalon.Api.csproj" />
+  <Project Path="src/BeautySalon.AppHost/BeautySalon.AppHost.csproj" />
   <Project Path="tests/BeautySalon.Tests/BeautySalon.Tests.csproj" />
 </Solution>
