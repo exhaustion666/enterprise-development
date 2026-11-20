@@ -29,13 +29,12 @@ if (useVolumes)
     messaging.WithDataVolume("beautysalon-rabbitmq-data");
 }
 
-var api = builder.AddProject<Projects.BeautySalon_Api>("api")
+builder.AddProject<Projects.BeautySalon_Api>("api")
     .WithReference(database)
     .WithReference(messaging)
-    .WithHttpEndpoint(name: "http")
-    .WithHttpHealthCheck("/health", endpointName: "http")
     .WaitFor(database)
-    .WaitFor(messaging);
+    .WaitFor(messaging)
+    .WithHttpHealthCheck("/health");
 
 builder.Build().Run();
 
