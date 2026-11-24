@@ -170,6 +170,22 @@ public partial class InitialCreate : Migration
                 { 10, 2, 10, false, 10, new DateTimeOffset(new DateTime(2026, 9, 7, 14, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)) }
             });
 
+        migrationBuilder.Sql("""
+            
+            SELECT setval(pg_get_serial_sequence('"Customers"', 'Id'),
+            COALESCE((SELECT MAX("Id") FROM "Customers"), 0) + 1, false);
+
+            SELECT setval(pg_get_serial_sequence('"Specialists"', 'Id'),
+            COALESCE((SELECT MAX("Id") FROM "Specialists"), 0) + 1, false);
+
+            SELECT setval(pg_get_serial_sequence('"BeautyServices"', 'Id'),
+            COALESCE((SELECT MAX("Id") FROM "BeautyServices"), 0) + 1, false);
+
+            SELECT setval(pg_get_serial_sequence('"Bookings"', 'Id'),
+            COALESCE((SELECT MAX("Id") FROM "Bookings"), 0) + 1, false);
+            
+            """);
+
         migrationBuilder.CreateIndex(
             name: "IX_Bookings_BeautyServiceId",
             table: "Bookings",

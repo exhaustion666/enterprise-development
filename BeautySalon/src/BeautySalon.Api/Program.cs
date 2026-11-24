@@ -45,23 +45,6 @@ await using (var scope = app.Services.CreateAsyncScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<BeautySalonDbContext>();
     await dbContext.Database.MigrateAsync();
-
-    await dbContext.Database.ExecuteSqlRawAsync("""
-        SELECT setval(pg_get_serial_sequence('"Customers"', 'Id'),
-            COALESCE((SELECT MAX("Id") FROM "Customers"), 0) + 1, false);
-        """);
-    await dbContext.Database.ExecuteSqlRawAsync("""
-        SELECT setval(pg_get_serial_sequence('"Specialists"', 'Id'),
-            COALESCE((SELECT MAX("Id") FROM "Specialists"), 0) + 1, false);
-        """);
-    await dbContext.Database.ExecuteSqlRawAsync("""
-        SELECT setval(pg_get_serial_sequence('"BeautyServices"', 'Id'),
-            COALESCE((SELECT MAX("Id") FROM "BeautyServices"), 0) + 1, false);
-        """);
-    await dbContext.Database.ExecuteSqlRawAsync("""
-        SELECT setval(pg_get_serial_sequence('"Bookings"', 'Id'),
-            COALESCE((SELECT MAX("Id") FROM "Bookings"), 0) + 1, false);
-        """);
 }
 
 app.UseMiddleware<RequestLoggingMiddleware>();
